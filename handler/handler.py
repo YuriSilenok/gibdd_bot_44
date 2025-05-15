@@ -1,22 +1,21 @@
-# pylint: disable=no-member
-
 from aiogram import Router
 from magic_filter import F
 from aiogram.types import Message
 from database.models import User
 
-router = Router(name=__name__)
+# pylint: disable=no-member
+router = Router(name="")
 
 
 def get_inspectors():
-    """Получить список chat_id всех пользователей с ролью 'inspector'."""
+    """Получить список всех пользователей с ролью 'inspector'."""
     inspectors = User.select().where(User.role == "inspector").execute()
     return [user.tg_id for user in inspectors]
 
 
 @router.message(F.text & ~F.text.startswith("/"))
 async def handle_user_message(message: Message):
-    """Обработать сообщение пользователя: ответить и переслать инспекторам."""
+    """Обработка сообщения пользователя"""
     await message.answer(
         "Спасибо за обращение. "
         "Мы его уже передали инспекторам."
