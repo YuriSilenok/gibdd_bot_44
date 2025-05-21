@@ -1,11 +1,11 @@
 """Обработка команды start"""
 
 from aiogram import Router
-from aiogram.filters import CommandStart
 from aiogram.types import Message
-from database.models import User, UserRole
-from filters.admin import IsAdmin
-from keyboards.admin import KB
+from aiogram.filters import CommandStart
+from database.models import User
+from keyboards.common import get_kb_by_user
+
 
 router = Router()
 
@@ -31,12 +31,9 @@ async def cmd_start(message: Message):
         user.last_name = message.from_user.last_name
         user.first_name = message.from_user.first_name
         user.save()
-    is_admin = UserRole.get_or_none(
-        (UserRole.user == user) & (UserRole.role == IsAdmin.role)
-    )
 
     await message.answer(
         "Добрый день.Через этого бота Вы можете "
         "отправить анонимное сообщение о пьяном водителе.",
-        reply_markup=KB if is_admin else None,
+        reply_markup=get_kb_by_user(user),
     )
