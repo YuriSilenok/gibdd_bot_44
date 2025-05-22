@@ -8,6 +8,7 @@ from peewee import (
     IntegerField,
     DateTimeField,
     ForeignKeyField,
+    BooleanField,
 )
 
 # pylint: disable=R0903
@@ -32,6 +33,7 @@ class User(Table):
     last_name = CharField(null=True)
     first_name = CharField(null=True)
     phone = IntegerField(null=True)
+    is_ban = BooleanField(default=False)
 
 
 class Role(Table):
@@ -53,6 +55,7 @@ class Message(Table):
     user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
     text = CharField(max_length=4096)
     at_created = DateTimeField(default=datetime.now())
+    tg_message_id = IntegerField()
 
 
 class Patrol(Table):

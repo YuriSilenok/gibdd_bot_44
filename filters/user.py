@@ -22,3 +22,11 @@ class IsUser(BaseFilter):
             user=User.get(tg_id=message.from_user.id), role=self.role
         )
         return user_role is not None
+
+
+class IsBan(BaseFilter):
+    """Проверяет, является ли пользователь забаненным."""
+
+    async def __call__(self, message: Message) -> bool:
+        user = User.get_or_none(tg_id=message.from_user.id)
+        return not user.is_ban
