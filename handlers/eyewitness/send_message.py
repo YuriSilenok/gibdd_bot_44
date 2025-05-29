@@ -5,6 +5,7 @@ from aiogram.types import Message
 from filters.user import IsUser
 from handlers.eyewitness.common import send_message_to_employees
 
+
 # pylint: disable=E1101
 
 router = Router()
