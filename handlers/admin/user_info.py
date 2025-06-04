@@ -2,7 +2,6 @@
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from aiogram.filters import StateFilter
 from database.models import User, UserRole, Role, Admin
 from handlers.admin.show_employees import show_admins, show_inspectors
 from filters.admin import IsAdmin
@@ -11,10 +10,7 @@ from keyboards.admin.user_info import get_user_info_kb
 router = Router()
 
 
-@router.callback_query(F.data.startswith("user_info_"),
-                       IsAdmin(),
-                       StateFilter(None)
-                       )
+@router.callback_query(F.data.startswith("user_info_"), IsAdmin(),)
 async def handle_user_info(callback: CallbackQuery):
     """Обработчик информации о пользователе"""
     user = User.get_by_id(int(callback.data.split("_")[-1]))
@@ -24,11 +20,11 @@ async def handle_user_info(callback: CallbackQuery):
     await callback.message.edit_text(
         text=format_user_info(user, roles),
         parse_mode="HTML",
-        reply_markup=get_user_info_kb(user.id, roles)
+        reply_markup=get_user_info_kb(user, roles)
     )
 
 
-def format_user_info(user, roles):
+def format_user_info(user: User, roles: set):
     """Форматирует информацию о пользователе"""
     return (
         "<b>Информация о пользователе:</b>\n"
@@ -40,32 +36,25 @@ def format_user_info(user, roles):
     )
 
 
-@router.callback_query(F.data.startswith("remove_role_"),
-                       IsAdmin(),
-                       StateFilter(None)
-                       )
+@router.callback_query(F.data.startswith("delete_role_"), IsAdmin(),)
 async def handle_role_removal(callback: CallbackQuery):
     """Удаление ролей пользователя"""
-    user_id, role_key = callback.data.split("_")[2:]
-    role_name = {"inspector": "Инспектор", "admin": "Администратор"}[role_key]
+    role_id, user_id = map(int, callback.data.split("_")[2:])
+    role = Role.get_by_id(role_id)
+    user = User.get_by_id(user_id)
 
-    (UserRole.delete()
-     .where((UserRole.user == user_id) &
-            (UserRole.role == Role.get(name=role_name))
-            )
-     .execute())
+    UserRole.delete().where(
+        (UserRole.user == user) & (UserRole.role == role)
+    ).execute()
 
-    if role_key == "admin":
-        Admin.delete().where(Admin.user == user_id).execute()
+    if role.name == "Администратор":
+        Admin.delete().where(Admin.user == user).execute()
 
-    await callback.answer(f"Роль {role_name} удалена")
+    await callback.answer(f"Роль {role.name} удалена")
     await handle_user_info(callback)
 
 
-@router.callback_query(F.data == "back_to_users_list",
-                       IsAdmin(),
-                       StateFilter(None)
-                       )
+@router.callback_query(F.data == "back_to_users_list", IsAdmin(),)
 async def handle_back(callback: CallbackQuery):
     """Возврат к списку пользователей"""
     message_text = callback.message.text.lower()
