@@ -11,19 +11,18 @@ router = Router()
 
 @router.callback_query(F.data.startswith("user_info_"), IsAdmin())
 async def handle_user_info(callback: CallbackQuery):
-    """Обрабатывает запрос на просмотр информации о пользователе"""
     user = User.get_by_id(int(callback.data.split("_")[-1]))
 
     await callback.message.edit_text(
-        text=_format_user_info(user),
+        text=format_user_info(user),
         parse_mode="HTML",
         reply_markup=get_user_info_kb(user)
     )
 
 
-def _format_user_info(user: User) -> str:
+def format_user_info(user: User) -> str:
     """Форматирует информацию о пользователе"""
-    roles = [user_role.role.name for user_role in user.user_roles]
+    roles = [ur.role.name for ur in user.user_roles]
     return (
         "<b>Информация о пользователе:</b>\n"
         f"ID: {user.tg_id}\n"

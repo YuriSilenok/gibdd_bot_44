@@ -40,11 +40,6 @@ class User(Table):
         """Возвращает полное имя пользователя."""
         return f"{self.first_name or ''} {self.last_name or ''}".strip()
 
-    @property
-    def user_roles(self):
-        """Возвращает список UserRole для пользователя"""
-        return UserRole.select().where(UserRole.user == self)
-
 
 class Role(Table):
     """Класс ролей"""
@@ -55,8 +50,12 @@ class Role(Table):
 class UserRole(Table):
     """Класс роли пользователей"""
 
-    user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
-    role = ForeignKeyField(Role, on_update="CASCADE", on_delete="CASCADE")
+    user = ForeignKeyField(User, backref='user_roles', on_update="CASCADE",
+                           on_delete="CASCADE"
+                           )
+    role = ForeignKeyField(Role, backref='role_users', on_update="CASCADE",
+                           on_delete="CASCADE"
+                           )
 
 
 class Message(Table):
