@@ -40,6 +40,11 @@ class User(Table):
         """Возвращает полное имя пользователя."""
         return f"{self.first_name or ''} {self.last_name or ''}".strip()
 
+    @property
+    def user_roles(self):
+        """Возвращает список UserRole для пользователя"""
+        return UserRole.select().where(UserRole.user == self)
+
 
 class Role(Table):
     """Класс ролей"""
