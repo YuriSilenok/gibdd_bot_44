@@ -17,9 +17,4 @@ def get_user_info_kb(user, roles: set):
                 callback_data=f"delete_role_{all_roles[role_name]}_{user.id}"
             ))
 
-    buttons.append(InlineKeyboardButton(
-        text="Назад к списку",
-        callback_data="back_to_users_list"
-    ))
-
     return InlineKeyboardMarkup(inline_keyboard=[buttons])
