@@ -50,12 +50,12 @@ class Role(Table):
 class UserRole(Table):
     """Класс роли пользователей"""
 
-    user = ForeignKeyField(User, backref='user_roles', on_update="CASCADE",
-                           on_delete="CASCADE"
-                           )
-    role = ForeignKeyField(Role, backref='role_users', on_update="CASCADE",
-                           on_delete="CASCADE"
-                           )
+    user = ForeignKeyField(
+        User, backref="user_roles", on_update="CASCADE", on_delete="CASCADE"
+    )
+    role = ForeignKeyField(
+        Role, backref="role_users", on_update="CASCADE", on_delete="CASCADE"
+    )
 
 
 class Message(Table):

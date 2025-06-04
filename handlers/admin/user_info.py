@@ -17,7 +17,7 @@ async def handle_user_info(callback: CallbackQuery):
     await callback.message.edit_text(
         text=format_user_info(user),
         parse_mode="HTML",
-        reply_markup=get_user_info_kb(user)
+        reply_markup=get_user_info_kb(user),
     )
 
 
