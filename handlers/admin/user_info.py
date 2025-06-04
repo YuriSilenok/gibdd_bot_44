@@ -2,7 +2,7 @@
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from database.models import User, UserRole
+from database.models import User
 from filters.admin import IsAdmin
 from keyboards.admin.user_info import get_user_info_kb
 
@@ -13,27 +13,22 @@ router = Router()
 async def handle_user_info(callback: CallbackQuery):
     """Отображение информации о пользователе"""
     user = User.get_by_id(int(callback.data.split("_")[-1]))
-    user_roles = list(UserRole.select().where(UserRole.user == user))
-    roles = {ur.role.name for ur in user_roles}
-
-    list_type = ("admin" if "администратор" in callback.message.text.lower()
-                 else "inspector"
-                 )
 
     await callback.message.edit_text(
-        text=format_user_info(user, roles),
+        text=format_user_info(user),
         parse_mode="HTML",
-        reply_markup=get_user_info_kb(user, list_type)
+        reply_markup=get_user_info_kb(user)
     )
 
 
-def format_user_info(user: User, roles: set):
+def format_user_info(user: User):
     """Форматирование информации о пользователе"""
+    roles = {ur.role.name for ur in user.roles}
     return (
         "<b>Информация о пользователе:</b>\n"
         f"ID: {user.tg_id}\n"
-        f"Username: @{user.username or 'нет'}\n"
+        f"Username: @{user.username or 'не указан'}\n"
         f"Имя: {user.first_name or 'не указано'}\n"
-        f"Фамилия: {user.last_name or 'не указано'}\n"
+        f"Фамилия: {user.last_name or 'не указана'}\n"
         f"Роли: {', '.join(roles) or 'нет'}"
     )

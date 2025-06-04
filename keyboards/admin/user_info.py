@@ -1,21 +1,19 @@
 """Клавиатура управления ролями пользователя"""
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from database.models import UserRole
 
 
-def get_user_info_kb(user, list_type: str):
-    """Генерация кнопок в зависимости от типа списка"""
+def get_user_info_kb(user):
+    """Генерация кнопок для каждой роли пользователя"""
     buttons = []
+    user_roles = UserRole.select().where(UserRole.user == user)
 
-    if list_type == "admin":
+    for user_role in user_roles:
+        role_name = user_role.role.name.lower()
         buttons.append(InlineKeyboardButton(
-            text="Удалить роль администратора",
-            callback_data=f"admin_role_action_{user.id}"
-        ))
-    else:
-        buttons.append(InlineKeyboardButton(
-            text="Удалить роль инспектора",
-            callback_data=f"inspector_role_action_{user.id}"
+            text=f"Удалить роль {role_name}",
+            callback_data=f"remove_role_{user_role.role.id}_{user.id}"
         ))
 
     return InlineKeyboardMarkup(inline_keyboard=[buttons])
