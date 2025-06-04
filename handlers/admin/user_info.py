@@ -11,6 +11,7 @@ router = Router()
 
 @router.callback_query(F.data.startswith("user_info_"), IsAdmin())
 async def handle_user_info(callback: CallbackQuery):
+    """Обработчик просмотра информации о пользователе"""
     user = User.get_by_id(int(callback.data.split("_")[-1]))
 
     await callback.message.edit_text(
