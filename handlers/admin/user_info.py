@@ -18,9 +18,8 @@ router = Router()
 async def handle_user_info(callback: CallbackQuery):
     """Обработчик информации о пользователе"""
     user = User.get_by_id(int(callback.data.split("_")[-1]))
-    roles = {ur.role.name for ur
-             in UserRole.select().where(UserRole.user == user)
-             }
+    user_roles = list(UserRole.select().where(UserRole.user == user))
+    roles = {ur.role.name for ur in user_roles}
 
     await callback.message.edit_text(
         text=format_user_info(user, roles),
