@@ -1,7 +1,9 @@
 """Библеотеки для проверки Инспектора"""
 
 from aiogram.types import Message
-from filters import IsUser, IsAdmin, IsInspector
+from filters.user import IsUser
+from filters.admin import IsAdmin
+from filters.inspector import IsInspector
 from database.models import User, UserRole
 
 
