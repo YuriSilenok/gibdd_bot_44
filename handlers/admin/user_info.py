@@ -3,7 +3,6 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, UserRole, Role, Admin
-from handlers.admin.show_employees import show_admins, show_inspectors
 from filters.admin import IsAdmin
 from keyboards.admin.user_info import get_user_info_kb
 
@@ -52,15 +51,3 @@ async def handle_role_removal(callback: CallbackQuery):
 
     await callback.answer(f"Роль {role.name} удалена")
     await handle_user_info(callback)
-
-
-@router.callback_query(F.data == "back_to_users_list", IsAdmin(),)
-async def handle_back(callback: CallbackQuery):
-    """Возврат к списку пользователей"""
-    message_text = callback.message.text.lower()
-    await callback.message.delete()
-
-    if 'администратор' in message_text:
-        await show_admins(callback.message)
-    else:
-        await show_inspectors(callback.message)
