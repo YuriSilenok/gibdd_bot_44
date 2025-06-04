@@ -29,7 +29,9 @@ async def handle_role_deletion(callback: CallbackQuery):
     ).execute()
 
     if deleted_count > 0:
-        await callback.answer(f"Роль {role.name} удалена")
+        await callback.message.answer(f"Роль {role.name} удалена")
         await handle_user_info(callback)
     else:
-        await callback.answer(f"Роль {role.name} уже была удалена ранее")
+        await callback.message.answer(
+            f"Роль {role.name} уже была удалена ранее"
+            )
