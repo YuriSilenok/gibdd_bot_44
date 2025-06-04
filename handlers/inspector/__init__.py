@@ -1,13 +1,11 @@
 """подключение роутеров"""
 
 from aiogram import Dispatcher
-from .user_ban import router as user_ban
-from .start_patrol import router as start_patrol
-from .end_patrol import router as end_patrol
+from .start_patrol import router as start_patrol_router
+from .end_patrol import router as end_patrol_router
 
 
 def add_routers(dp: Dispatcher):
     """Подключение роутеров"""
-    dp.include_routers(user_ban)
-    dp.include_router(start_patrol)
-    dp.include_router(end_patrol)
+    dp.include_router(start_patrol_router)
+    dp.include_router(end_patrol_router)

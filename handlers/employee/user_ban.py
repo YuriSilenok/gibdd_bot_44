@@ -4,15 +4,14 @@ from asyncio import sleep
 from aiogram import exceptions
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from filters.inspector import IsInspector
-from filters.admin import IsAdmin
-from keyboards.inspector import user_ban_cobfirm_and_cancel_kb, user_ban_kb
+from filters import IsEmployee, IsAdmin
+from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
 from database.models import Message, User, UserRole
 
 router = Router()
 
 
-@router.callback_query(F.data.startswith("ban_"), IsInspector())
+# @router.callback_query(F.data.startswith("ban_"), IsEmployee())
 async def show_inspectors(callback: CallbackQuery):
     """Подтверждение блокирования пользователя."""
     user_id = callback.data.split("_")[-1]
@@ -21,7 +20,7 @@ async def show_inspectors(callback: CallbackQuery):
     )
 
 
-@router.callback_query(F.data.startswith("user_ban_confirm_"), IsInspector())
+# @router.callback_query(F.data.startswith("user_ban_confirm_"), IsEmployee())
 async def blocking_user(callback: CallbackQuery):
     """Блокировка пользователя."""
     user_id = callback.data.split("_")[-1]
@@ -63,7 +62,7 @@ async def blocking_user(callback: CallbackQuery):
         await sleep(0.5)
 
 
-@router.callback_query(F.data.startswith("user_ban_cancel_"), IsInspector())
+@router.callback_query(F.data.startswith("user_ban_cancel_"), IsEmployee())
 async def unblocking_user(callback: CallbackQuery):
     """Отмена блокировки пользователя."""
     user_id = callback.data.split("_")[-1]

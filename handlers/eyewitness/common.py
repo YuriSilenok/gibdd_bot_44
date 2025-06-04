@@ -13,7 +13,7 @@ from database.models import (
     Video,
     Message as MessageM,
 )
-from keyboards.inspector import user_ban_kb
+from keyboards.employee import user_ban_kb
 from keyboards.eyewitness import KB as eyewitness_kb
 
 # pylint: disable=E1101
@@ -27,7 +27,9 @@ async def send_message_to_employ(message: Message, employ: User):
     last_message: MessageM = (
         MessageM.select()
         .where(
-            (MessageM.from_user == eyewitness) & (MessageM.to_user == employ)
+            (MessageM.from_user == eyewitness)
+            & (MessageM.to_user == employ)
+            & (~MessageM.is_delete)
         )
         .order_by(MessageM.id.desc())
         .first()
@@ -36,7 +38,7 @@ async def send_message_to_employ(message: Message, employ: User):
     if last_message is None:
         last_message = (
             MessageM.select()
-            .where((MessageM.from_user == eyewitness))
+            .where((MessageM.from_user == eyewitness) & (~MessageM.is_delete))
             .order_by(MessageM.id.desc())
             .first()
         )
@@ -51,11 +53,11 @@ async def send_message_to_employ(message: Message, employ: User):
                 tg_message_id=msg.message_id,
             )
 
-            await send_message_to_employ(message, employ)
-            return
+        await send_message_to_employ(message=message, employ=employ)
+        return
 
     if message.location:
-        send_message = await message.bot.send_location(
+        send_message: Message = await message.bot.send_location(
             chat_id=employ.tg_id,
             latitude=message.location.latitude,
             longitude=message.location.longitude,

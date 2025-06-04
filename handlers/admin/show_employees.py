@@ -16,10 +16,7 @@ async def show_inspectors(message: Message):
     await message.answer(
         "<b>Список инспекторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(
-            role=IsInspector.role,
-            page=1
-        ),
+        reply_markup=get_kb_by_show_employees(role=IsInspector.role, page=1),
     )
 
 
@@ -45,8 +42,5 @@ async def show_admins(message: Message):
     await message.answer(
         "<b>Список администраторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(
-            role=IsAdmin.role,
-            page=1
-        ),
+        reply_markup=get_kb_by_show_employees(role=IsAdmin.role, page=1),
     )
