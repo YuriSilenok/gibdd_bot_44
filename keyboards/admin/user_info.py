@@ -7,7 +7,7 @@ from database.models import UserRole
 def get_user_info_kb(user):
     """Генерация кнопок для каждой роли пользователя"""
     buttons = []
-    user_roles = UserRole.select().where(UserRole.user == user)
+    user_roles = list(UserRole.select().where(UserRole.user == user))
 
     for user_role in user_roles:
         role_name = user_role.role.name.lower()
