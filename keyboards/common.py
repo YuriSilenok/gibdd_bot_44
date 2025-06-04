@@ -4,7 +4,7 @@ from aiogram.types import ReplyKeyboardMarkup
 from filters.admin import IsAdmin
 from filters.inspector import IsInspector
 from database.models import User, UserRole
-from .admin import get_keyboard_by_user as keyboard_admin
+from .admin.admin import get_keyboard_by_user as keyboard_admin
 from .inspector import get_keyboard_by_user as keyboard_inspector
 
 
