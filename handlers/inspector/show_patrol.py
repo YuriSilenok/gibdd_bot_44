@@ -21,8 +21,7 @@ async def end_patrl(message: Message):
         await message.answer(
             f"Имя: <b>{inspector.username}</b>\n"
             f"Статус: <b>инспектор</b>\n"
-            f"Патрулирование:<b>{'Да' if is_patrol else 'Нет'
-            }</b>",
+            f"Патрулирование:<b>{'Да' if is_patrol else 'Нет'}</b>",
             parse_mode="HTML"
         )
     return
