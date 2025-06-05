@@ -36,5 +36,5 @@ def format_user_info(user: User) -> str:
         f"Имя: {user.first_name or 'не указано'}\n"
         f"Фамилия: {user.last_name or 'не указана'}\n"
         f"Роли: {', '.join(roles) or 'нет'}\n"
-        f"Патрулирование: {'Да' if is_patrol else 'Нет'}"
+        f"{f'Патрулирование: {"Да" if is_patrol else "Нет"}' if 'Инспектор' in roles else ''}"
     )
