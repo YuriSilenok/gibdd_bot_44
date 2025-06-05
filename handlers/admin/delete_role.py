@@ -13,7 +13,7 @@ router = Router()
 async def handle_role_deletion(callback: CallbackQuery):
     """Обрабатывает удаление роли пользователя"""
 
-    parts = callback.data.split('_')
+    parts = callback.data.split("_")
     if len(parts) < 3:
         print("Неверный формат callback_data")
         return
@@ -24,10 +24,11 @@ async def handle_role_deletion(callback: CallbackQuery):
     role = Role.get_by_id(int(role_id))
     user = User.get_by_id(int(user_id))
 
-    deleted_count = UserRole.delete().where(
-        (UserRole.user == user) &
-        (UserRole.role == role)
-    ).execute()
+    deleted_count = (
+        UserRole.delete()
+        .where((UserRole.user == user) & (UserRole.role == role))
+        .execute()
+    )
 
     if deleted_count > 0:
         await callback.message.answer(f"Роль {role.name} удалена")
@@ -35,4 +36,4 @@ async def handle_role_deletion(callback: CallbackQuery):
     else:
         await callback.message.answer(
             f"Роль {role.name} уже была удалена ранее"
-            )
+        )
