@@ -22,6 +22,9 @@ def get_keyboard_by_user(user: User):
                     if is_patrol
                     else "Начать патрулирование"
                 )
+            ),
+            KeyboardButton(
+                text=("\U0001F6A8")
             )
         ]
     ]
