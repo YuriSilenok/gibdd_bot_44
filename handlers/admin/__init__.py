@@ -5,6 +5,7 @@ from .add_role import router as add_role_router
 from .show_employees import router as show_employees_router
 from .notify import router as notify_router
 from .user_info import router as user_info_router
+from .delete_role import router as delete_role_router
 
 
 def add_routers(dp: Dispatcher):
@@ -14,4 +15,5 @@ def add_routers(dp: Dispatcher):
         show_employees_router,
         notify_router,
         user_info_router,
+        delete_role_router,
     )
