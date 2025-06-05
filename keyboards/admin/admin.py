@@ -55,12 +55,9 @@ def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
     inline_keyboard = [
         [
             InlineKeyboardButton(
-                text=f"{'🚨 ' 
-                    if Patrol.get_or_none(
+                text=f"{'🚨 ' if Patrol.get_or_none(
                         (Patrol.inspector == ur.user) & (Patrol.end.is_null())
-                    )
-                    else ''
-                }{ur.user.full_name}",
+                    ) else ''}{ur.user.full_name}",
                 callback_data=f"user_info_{ur.user.id}",
             )
         ]
