@@ -15,7 +15,8 @@ async def handle_role_deletion(callback: CallbackQuery):
 
     parts = callback.data.split('_')
     if len(parts) < 3:
-        raise ValueError("Неверный формат callback_data")
+        print("Неверный формат callback_data")
+        return
 
     role_id = parts[-2]
     user_id = parts[-1]
