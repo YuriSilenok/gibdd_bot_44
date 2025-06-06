@@ -46,9 +46,7 @@ def get_kb_by_user(user: User):
     )
 
 
-def get_kb_by_show_employees(role: Role, user: User, page: int,
-                             limit: int = 10
-                             ):
+def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
     """Возвращает клавиатуру пользователей"""
 
     role_id = role.id if isinstance(role, Role) else role
