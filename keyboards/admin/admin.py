@@ -55,7 +55,7 @@ def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
     pat = set()
     if role_obj and role_obj.name == "Инспектор":
         pat = {
-            p.inspector.id 
+            p.inspector.id
             for p in Patrol.select().where(Patrol.end.is_null())
         }
 
