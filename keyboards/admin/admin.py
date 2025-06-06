@@ -52,11 +52,12 @@ def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
 
     role_object = role if isinstance(role, Role) else Role.get_by_id(role)
 
-    inspector_in_patrol = {
-        p.inspector_id
-        for p in Patrol.select(Patrol.inspector)
-        .where(Patrol.end.is_null())
-    } if IsInspector.role == role_object else set()
+    inspector_in_patrol = set()
+    if IsInspector.role == role_object:
+        inspector_in_patrol = {
+            p.inspector.id
+            for p in Patrol.select().where(Patrol.end.is_null()).execute()
+        }
 
     inline_keyboard = [
         [
