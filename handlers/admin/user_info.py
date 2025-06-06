@@ -2,7 +2,7 @@
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from database.models import User
+from database.models import User, Patrol
 from filters.admin import IsAdmin
 from keyboards.admin.user_info import get_user_info_kb
 
@@ -24,11 +24,18 @@ async def handle_user_info(callback: CallbackQuery):
 def format_user_info(user: User) -> str:
     """Форматирует информацию о пользователе"""
     roles = [ur.role.name for ur in user.user_roles]
+
+    is_on_patrol = Patrol.select().where(
+        (Patrol.inspector == user) &
+        (Patrol.end.is_null())
+    ).exists()
+
     return (
         "<b>Информация о пользователе:</b>\n"
         f"ID: {user.tg_id}\n"
         f"Username: @{user.username or 'не указан'}\n"
         f"Имя: {user.first_name or 'не указано'}\n"
         f"Фамилия: {user.last_name or 'не указана'}\n"
-        f"Роли: {', '.join(roles) or 'нет'}"
+        f"Роли: {', '.join(roles) or 'нет'}\n"
+        f"Патрулирование: {'Да' if is_on_patrol else 'Нет'}"
     )

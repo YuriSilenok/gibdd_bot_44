@@ -52,10 +52,12 @@ def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
     if isinstance(role, Role):
         role = role.id
 
+    is_inspector = Role.get_by_id(role).name == "Инспектор" if role else False
+
     inline_keyboard = [
         [
             InlineKeyboardButton(
-                text=ur.user.full_name,
+                text=f"{ur.user.full_name}{' 🚨' if is_inspector else ''}",
                 callback_data=f"user_info_{ur.user.id}",
             )
         ]
