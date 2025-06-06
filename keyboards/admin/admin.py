@@ -6,7 +6,8 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
-from database.models import User, Admin, Role, UserRole
+from database.models import User, Admin, Role, UserRole, Patrol
+from filters.inspector import IsInspector
 
 
 ADMIN_KEYBOARD = [
@@ -49,18 +50,26 @@ def get_kb_by_user(user: User):
 def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
     """Возвращает клавиатуру пользователей"""
 
-    if isinstance(role, Role):
-        role = role.id
+    role_object = role if isinstance(role, Role) else Role.get_by_id(role)
+
+    inspector_in_patrol = set()
+    if IsInspector.role == role_object:
+        inspector_in_patrol = {
+            p.inspector.id
+            for p in Patrol.select().where(Patrol.end.is_null()).execute()
+        }
 
     inline_keyboard = [
         [
             InlineKeyboardButton(
-                text=ur.user.full_name,
+                text=(f"{'🚨 ' if ur.user.id in inspector_in_patrol else ''}"
+                      f"{ur.user.full_name}"
+                      ),
                 callback_data=f"user_info_{ur.user.id}",
             )
         ]
         for ur in UserRole.select()
-        .where(UserRole.role == role)
+        .where(UserRole.role == role_object)
         .offset((page - 1) * limit)
         .limit(limit)
     ]
