@@ -18,8 +18,7 @@ async def get_message_from_user(message: Message) -> None:
     """Обработчик сообщения от пользователя"""
     await answer(message=message)
     await send_message_to_employees(
-        bot=message.bot,
-        user_message=save_user_message(message=message)
+        bot=message.bot, user_message=save_user_message(message=message)
     )
 
 
@@ -28,8 +27,7 @@ async def get_animation_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
     await send_message_to_employees(
-        bot=message.bot,
-        user_message=save_user_message(message=message)
+        bot=message.bot, user_message=save_user_message(message=message)
     )
 
 
@@ -38,8 +36,7 @@ async def get_video_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
     await send_message_to_employees(
-        bot=message.bot,
-        user_message=save_user_message(message=message)
+        bot=message.bot, user_message=save_user_message(message=message)
     )
 
 
@@ -48,8 +45,7 @@ async def get_photo_from_user(message: Message) -> None:
     """Обработчик фотографий от пользователя"""
     await answer(message=message)
     await send_message_to_employees(
-        bot=message.bot,
-        user_message=save_user_message(message=message)
+        bot=message.bot, user_message=save_user_message(message=message)
     )
 
 
@@ -58,8 +54,7 @@ async def get_location_from_user(message: Message) -> None:
     """Обработчик локации от пользователя"""
     await answer(message=message)
     await send_message_to_employees(
-        bot=message.bot,
-        user_message=save_user_message(message=message)
+        bot=message.bot, user_message=save_user_message(message=message)
     )
 
 
