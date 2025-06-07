@@ -60,6 +60,7 @@ class UserRole(Table):
 
 class MessageType(Table):
     """Тип сообщения"""
+
     name = CharField(max_length=10)
 
 
@@ -82,10 +83,9 @@ class UserMessage(Table):
 
 class ForwardMessage(Table):
     """Пересланое сообщение"""
+
     user_message = ForeignKeyField(
-        model=UserMessage,
-        on_update="CASCADE",
-        on_delete="CASCADE"
+        model=UserMessage, on_update="CASCADE", on_delete="CASCADE"
     )
     to_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
     at_created = DateTimeField(default=datetime.now())
@@ -98,8 +98,9 @@ class Location(Table):
 
     message = ForeignKeyField(
         model=UserMessage,
-        backref='location',
-        on_update="CASCADE", on_delete="CASCADE"
+        backref="location",
+        on_update="CASCADE",
+        on_delete="CASCADE",
     )
     longitude = FloatField()
     latitude = FloatField()
@@ -110,8 +111,9 @@ class MessageFile(Table):
 
     message = ForeignKeyField(
         model=UserMessage,
-        backref='file',
-        on_update="CASCADE", on_delete="CASCADE"
+        backref="file",
+        on_update="CASCADE",
+        on_delete="CASCADE",
     )
     file_id = CharField(max_length=128)
 
@@ -135,8 +137,16 @@ if __name__ == "__main__":
     DB.connect()
     DB.create_tables(
         models=[
-            User, Role, UserRole, MessageType, UserMessage,
-            ForwardMessage, Patrol, Admin, MessageFile, Location,
+            User,
+            Role,
+            UserRole,
+            MessageType,
+            UserMessage,
+            ForwardMessage,
+            Patrol,
+            Admin,
+            MessageFile,
+            Location,
         ],
         safe=True,
     )
@@ -148,5 +158,5 @@ if __name__ == "__main__":
         user=admin,
         role=admin_role,
     )
-    for name in ['text', 'photo', 'video', 'location', 'animation']:
+    for name in ["text", "photo", "video", "location", "animation"]:
         MessageType.get_or_create(name=name)

@@ -5,16 +5,8 @@ from aiogram import exceptions
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from filters import IsEmployee, IsAdmin
-from keyboards.employee import (
-    user_ban_cobfirm_and_cancel_kb,
-    user_ban_kb
-)
-from database.models import (
-    UserMessage,
-    ForwardMessage,
-    User,
-    UserRole
-)
+from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
+from database.models import UserMessage, ForwardMessage, User, UserRole
 
 router = Router()
 
@@ -42,12 +34,11 @@ async def blocking_user(callback: CallbackQuery) -> None:
     user_to_block.save()
 
     user_ban_messages: List[ForwardMessage] = list(
-        ForwardMessage
-        .select()
+        ForwardMessage.select()
         .join(UserMessage)
         .where(
-            (UserMessage.from_user == user_to_block) &
-            (~ForwardMessage.is_delete)
+            (UserMessage.from_user == user_to_block)
+            & (~ForwardMessage.is_delete)
         )
     )
 
@@ -65,9 +56,7 @@ async def blocking_user(callback: CallbackQuery) -> None:
     ).execute()
 
     admins: List[User] = list(
-        User.select().join(UserRole).where(
-            UserRole.role == IsAdmin.role
-        )
+        User.select().join(UserRole).where(UserRole.role == IsAdmin.role)
     )
     inspector: User = User.get(User.tg_id == callback.from_user.id)
     for admin in admins:
