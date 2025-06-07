@@ -34,7 +34,7 @@ async def enable_notifications(message: Message):
 
 @router.message(F.text == "Не получать сообщения очевидцев", IsAdmin())
 async def disable_notifications(message: Message):
-    """Включает получения сообщей очевидцев"""
+    """Выключает получения сообщей очевидцев"""
     user: User = User.get(tg_id=message.from_user.id)
     admin = Admin.get_or_none(user=user)
     if not admin:
