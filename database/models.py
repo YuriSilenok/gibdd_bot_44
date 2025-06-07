@@ -54,41 +54,52 @@ class UserRole(Table):
     role = ForeignKeyField(Role, on_update="CASCADE", on_delete="CASCADE")
 
 
-class Message(Table):
+class MessageType(Table):
+    """Тип сообщения"""
+    name = CharField(max_length=10)
+
+
+class UserMessage(Table):
     """Класс сообщений пользователя"""
 
-    to_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
     from_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
     text = CharField(max_length=4096, null=True)
     at_created = DateTimeField(default=datetime.now())
     tg_message_id = IntegerField()
-    is_delete = BooleanField(default=False)
 
 
-class Photo(Table):
-    """Сведения о фотографии"""
-
-    message = ForeignKeyField(
-        Message, on_update="CASCADE", on_delete="CASCADE"
+class ForwardMessage(Table):
+    """Пересланое сообщение"""
+    user_message = ForeignKeyField(
+        model=UserMessage,
+        on_update="CASCADE",
+        on_delete="CASCADE"
     )
-    file_id = CharField(max_length=128)
+    to_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    at_created = DateTimeField(default=datetime.now())
+    tg_message_id = IntegerField()
+    is_delete = BooleanField(default=False)
 
 
 class Location(Table):
     """Класс для хранения геолокационных данных"""
 
     message = ForeignKeyField(
-        Message, on_update="CASCADE", on_delete="CASCADE"
+        model=UserMessage,
+        backref='location',
+        on_update="CASCADE", on_delete="CASCADE"
     )
     longitude = FloatField()
     latitude = FloatField()
 
 
-class Video(Table):
+class MessageFile(Table):
     """Сведения о видео"""
 
     message = ForeignKeyField(
-        Message, on_update="CASCADE", on_delete="CASCADE"
+        model=UserMessage,
+        backref='file',
+        on_update="CASCADE", on_delete="CASCADE"
     )
     file_id = CharField(max_length=128)
 
@@ -111,7 +122,10 @@ class Admin(Table):
 if __name__ == "__main__":
     DB.connect()
     DB.create_tables(
-        [User, Role, UserRole, Message, Patrol, Admin, Photo, Location, Video],
+        models=[
+            User, Role, UserRole, MessageType, UserMessage,
+            ForwardMessage, Patrol, Admin, MessageFile, Location,
+        ],
         safe=True,
     )
     DB.close()
@@ -122,3 +136,5 @@ if __name__ == "__main__":
         user=admin,
         role=admin_role,
     )
+    for name in ['Тест', 'Фото', 'Видео', 'Геолокация']:
+        MessageType.get_or_create(name=name)
