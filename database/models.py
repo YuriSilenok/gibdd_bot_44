@@ -66,10 +66,18 @@ class MessageType(Table):
 class UserMessage(Table):
     """Класс сообщений пользователя"""
 
-    from_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    from_user = ForeignKeyField(
+        model=User,
+        on_update="CASCADE",
+        on_delete="CASCADE",
+    )
+    type = ForeignKeyField(
+        model=MessageType,
+        on_update="CASCADE",
+        on_delete="CASCADE",
+    )
     text = CharField(max_length=4096, null=True)
     at_created = DateTimeField(default=datetime.now())
-    tg_message_id = IntegerField()
 
 
 class ForwardMessage(Table):
@@ -140,5 +148,5 @@ if __name__ == "__main__":
         user=admin,
         role=admin_role,
     )
-    for name in ['Тест', 'Фото', 'Видео', 'Геолокация']:
+    for name in ['text', 'photo', 'video', 'location', 'animation']:
         MessageType.get_or_create(name=name)
