@@ -62,7 +62,8 @@ def get_prev_message(user_message: UserMessage) -> UserMessage:
         UserMessage
         .select()
         .where(
-            UserMessage.at_created >= last_hour
+            (UserMessage.at_created >= last_hour) &
+            (UserMessage.id < user_message.id)
         )
         .order_by(UserMessage.id.desc())
         .first()
@@ -179,7 +180,7 @@ MESSAGE_TYPE = {
 async def send_message_to_employee(
         bot: Bot,
         user_message: UserMessage,
-        employee: User) -> None:
+        employee: User) -> ForwardMessage:
     """Переслать сообщение очевидца конкретному сотруднику"""
 
     # Предыдущее сообщение пользователя
@@ -196,6 +197,12 @@ async def send_message_to_employee(
                 is_delete=False,
             )
         )
+    if prev_message and prev_forward_message is None:
+        prev_forward_message = await send_message_to_employee(
+            bot=bot,
+            user_message=prev_message,
+            employee=employee,
+        )
 
     try:
         message: Message = (
@@ -211,7 +218,7 @@ async def send_message_to_employee(
         # на которое нужно ответить
         prev_forward_message.is_delete = True
         prev_forward_message.save()
-        await send_message_to_employee(
+        prev_forward_message = await send_message_to_employee(
             bot=bot,
             user_message=prev_message,
             employee=employee,
@@ -220,15 +227,18 @@ async def send_message_to_employee(
             await MESSAGE_TYPE[user_message.type.name](
                 bot=bot,
                 user_message=user_message,
-                prev_message=prev_message,
+                prev_message=prev_forward_message,
                 employee=employee,
             )
         )
-    ForwardMessage.get_or_create(
+    if prev_forward_message and message.reply_to_message is None:
+        prev_forward_message.is_delete = True
+        prev_forward_message.save()
+    return ForwardMessage.get_or_create(
         user_message=user_message,
         to_user=employee,
         tg_message_id=message.message_id,
-    )
+    )[0]
 
 
 async def send_message_to_employees(
