@@ -1,9 +1,9 @@
-"""Библеотеки для проверки пользователя"""
+"""Библиотеки для проверки пользователя"""
 
+from datetime import datetime
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import User, UserRole
-from datetime import datetime
 
 
 class IsUser(BaseFilter):
