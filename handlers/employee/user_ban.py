@@ -7,9 +7,14 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from filters import IsEmployee, IsAdmin
 from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
-from database.models import UserMessage, ForwardMessage, User, UserRole, Role
+from database.models import UserMessage, ForwardMessage, User, UserRole
 
 router = Router()
+
+
+async def is_staff(user: User) -> bool:
+    """Проверяет, является ли пользователь сотрудником."""
+    return UserRole.select().where(UserRole.user == user).exists()
 
 
 @router.callback_query(F.data.startswith("ban_"), IsEmployee())
@@ -18,9 +23,15 @@ async def show_inspectors(callback: CallbackQuery) -> None:
     try:
         user_id: str = callback.data.split("_")[-1]
         user_to_block = User.get_by_id(user_id)
+
         if not user_to_block:
             await callback.answer("Пользователь не найден")
-            await callback.message.delete()
+            await callback.message.edit_reply_markup(reply_markup=None)
+            return
+
+        if await is_staff(user_to_block):
+            await callback.answer("Вы не можете забанить другого сотрудника")
+            await callback.message.edit_reply_markup(reply_markup=None)
             return
 
         await callback.message.edit_reply_markup(
@@ -28,7 +39,6 @@ async def show_inspectors(callback: CallbackQuery) -> None:
         )
     except Exception as e:
         print(f"Ошибка в show_inspectors: {e}")
-        await callback.answer("Произошла ошибка")
 
 
 @router.callback_query(F.data.startswith("user_ban_confirm_"), IsEmployee())
@@ -37,22 +47,23 @@ async def blocking_user(callback: CallbackQuery) -> None:
     try:
         user_id: str = callback.data.split(sep="_")[-1]
         user_to_block = User.get_by_id(user_id)
+
         if not user_to_block:
             await callback.answer("Пользователь не найден")
-            await callback.message.delete()
+            await callback.message.edit_reply_markup(reply_markup=None)
             return
 
-        inspector = User.get_or_none(User.tg_id == callback.from_user.id)
-        if not inspector:
-            await callback.answer("Ошибка: инспектор не найден")
+        if await is_staff(user_to_block):
+            await callback.answer("Вы не можете забанить другого сотрудника")
+            await callback.message.edit_reply_markup(reply_markup=None)
             return
 
         if user_to_block.is_ban and user_to_block.ban_until > datetime.now():
             await callback.answer(text="Пользователь уже заблокирован.")
+            await callback.message.delete()
             return
 
-        ban_duration = (timedelta(days=30)
-                        if user_to_block.ban_count > 0 else timedelta(days=1))
+        ban_duration = timedelta(days=30 if user_to_block.ban_count > 0 else 1)
         user_to_block.ban_until = datetime.now() + ban_duration
         user_to_block.ban_count += 1
         user_to_block.is_ban = True
@@ -87,58 +98,51 @@ async def blocking_user(callback: CallbackQuery) -> None:
                                               for msg in user_ban_messages])
         ).execute()
 
-        admins: List[User] = list(
-            User.select().join(UserRole).where(UserRole.role == IsAdmin.role)
-        )
-
-        inspector_roles = (Role.select().join(UserRole)
-                           .where(UserRole.user == inspector))
-        blocker_roles_str = (", ".join([role.name for role
-                                        in inspector_roles]))
-
-        admin_message = (
-            f"Пользователь {user_to_block.full_name} заблокирован\n"
-            f"Заблокировал: {inspector.full_name}\n"
-            f"Роли блокирующего: {blocker_roles_str}\n"
-        )
-
-        message_to_forward = None
-        if callback.message.reply_to_message:
-            original_msg = callback.message.reply_to_message
-            if original_msg.text:
-                admin_message += f"\n\nСообщение: {original_msg.text}"
-            elif original_msg.caption:
-                admin_message += f"\n\nПодпись: {original_msg.caption}"
-
-            user_message = UserMessage.get_or_none(
-                from_user=user_to_block,
-                text=original_msg.text or original_msg.caption
+        if not await IsAdmin().check(callback):
+            admins: List[User] = list(
+                User.select().join(UserRole)
+                .where(UserRole.role == IsAdmin.role)
             )
-            if user_message and user_message.type.name == "location":
-                for location in user_message.location:
-                    admin_message += (f"\n\nЛокация: "
-                                      f"широта: {location.latitude}, "
-                                      f"долгота: {location.longitude}")
-            elif callback.message.reply_to_message:
-                message_to_forward = (callback.message.
-                                      reply_to_message.message_id)
 
-        # Отправка сообщений админам
-        for admin in admins:
-            try:
-                await callback.bot.send_message(
-                    chat_id=admin.tg_id,
-                    text=admin_message
+            admin_message = (
+                f"Пользователь {user_to_block.full_name} заблокирован\n"
+                f"Заблокировал: {callback.from_user.full_name}\n"
+                f"Бан до: {ban_until_str}"
+            )
+
+            message_to_forward = None
+            if callback.message.reply_to_message:
+                user_message = UserMessage.get_or_none(
+                    from_user=user_to_block,
+                    text=(callback.message.reply_to_message.text or
+                          callback.message.reply_to_message.caption)
                 )
-                if message_to_forward:
-                    await callback.bot.forward_message(
+
+                if user_message:
+                    if user_message.type.name == "location":
+                        for location in user_message.location:
+                            admin_message += (f"\n\nЛокация: "
+                                              f"широта: {location.latitude}, "
+                                              f"долгота: {location.longitude}")
+                    else:
+                        message_to_forward = (callback.message.
+                                              reply_to_message.message_id)
+
+            for admin in admins:
+                try:
+                    await callback.bot.send_message(
                         chat_id=admin.tg_id,
-                        from_chat_id=callback.message.chat.id,
-                        message_id=message_to_forward
+                        text=admin_message
                     )
-            except exceptions.TelegramBadRequest as e:
-                print(f"Ошибка при отправке сообщения администратору"
-                      f" {admin.tg_id}: {e}")
+                    if message_to_forward:
+                        await callback.bot.forward_message(
+                            chat_id=admin.tg_id,
+                            from_chat_id=callback.message.chat.id,
+                            message_id=message_to_forward
+                        )
+                except exceptions.TelegramBadRequest as e:
+                    print(f"Ошибка при отправке сообщения администратору"
+                          f"{admin.tg_id}: {e}")
 
         await callback.answer(text="Пользователь заблокирован.")
         await callback.message.delete()
