@@ -12,7 +12,7 @@ class IsEmployee(IsUser):
     """Проверяет является ли пользователь Инспектором"""
 
     async def __call__(self, message: Message) -> bool:
-        if not super().__call__(message):
+        if not await super().__call__(message):
             return False
 
         user_role = UserRole.get_or_none(
