@@ -114,8 +114,8 @@ async def blocking_user(callback: CallbackQuery) -> None:
             if callback.message.reply_to_message:
                 user_message = UserMessage.get_or_none(
                     from_user=user_to_block,
-                    text=(callback.message.reply_to_message.text or
-                          callback.message.reply_to_message.caption)
+                    text=(callback.message.reply_to_message.text
+                          or callback.message.reply_to_message.caption)
                 )
 
                 if user_message:
