@@ -17,7 +17,7 @@ async def show_inspectors(callback: CallbackQuery) -> None:
     """Подтверждение блокирования пользователя."""
     try:
         user_id: str = callback.data.split("_")[-1]
-        user_to_block = User.get_or_none(User.tg_id == user_id)
+        user_to_block = User.get_by_id(user_id)
         if not user_to_block:
             await callback.answer("Пользователь не найден")
             return
@@ -35,7 +35,7 @@ async def blocking_user(callback: CallbackQuery) -> None:
     """Блокировка пользователя."""
     try:
         user_id: str = callback.data.split(sep="_")[-1]
-        user_to_block = User.get_or_none(User.tg_id == user_id)
+        user_to_block = User.get_by_id(user_id)
         if not user_to_block:
             await callback.answer("Пользователь не найден")
             return
