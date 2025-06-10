@@ -36,34 +36,33 @@ async def delete_messages(callback: CallbackQuery, user: User) -> None:
                                               msg.tg_message_id)
         except exceptions.TelegramBadRequest:
             await callback.answer("Не удалось удалить некоторые сообщения")
-    ForwardMessage.update(is_delete=True).where((
+    ForwardMessage.update(is_delete=True).where(
         ForwardMessage.tg_message_id.in_([m.tg_message_id for m in messages]))
-        .execute())
 
 
 async def notify_admins(callback: CallbackQuery, user: User,
                         ban_until: str) -> None:
     """Уведомление администраторов"""
-    if await IsAdmin().check(callback):
+
+    if UserRole.get_or_none(user=callback.from_user.id, role=IsAdmin.role):
         return
 
     admins = list(User.select().join(UserRole).where(UserRole.role
                                                      == IsAdmin.role))
-    msg = (f"Пользователь {user.full_name} заблокирован\n"
-           f"Заблокировал: {callback.from_user.full_name}\n"
-           f"Бан до: {ban_until}")
+    msg = (f"Пользователь {user.full_name} заблокирован\nЗаблокировал:"
+           f"{callback.from_user.full_name}\nБан до: {ban_until}")
     msg_id = None
 
     if callback.message.reply_to_message:
         user_msg = UserMessage.get_or_none(
             from_user=user,
-            text=callback.message.reply_to_message.text or callback.message.
-            reply_to_message.caption)
+            text=(callback.message.reply_to_message.text or callback.message.
+                  reply_to_message.caption))
 
         if user_msg and user_msg.type.name == "location":
             loc = user_msg.location[0]
             msg += (f"\n\nЛокация: широта: {loc.latitude},"
-                    f" долгота: {loc.longitude}")
+                    f"долгота: {loc.longitude}")
         else:
             msg_id = callback.message.reply_to_message.message_id
 
