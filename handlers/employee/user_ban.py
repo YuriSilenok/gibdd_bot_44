@@ -1,4 +1,4 @@
-"""Забинить пользователя"""
+"""Забанить пользователя"""
 
 from typing import List
 from datetime import datetime, timedelta
@@ -20,6 +20,7 @@ async def show_inspectors(callback: CallbackQuery) -> None:
         user_to_block = User.get_by_id(user_id)
         if not user_to_block:
             await callback.answer("Пользователь не найден")
+            await callback.message.delete()
             return
 
         await callback.message.edit_reply_markup(
@@ -38,6 +39,7 @@ async def blocking_user(callback: CallbackQuery) -> None:
         user_to_block = User.get_by_id(user_id)
         if not user_to_block:
             await callback.answer("Пользователь не найден")
+            await callback.message.delete()
             return
 
         inspector = User.get_or_none(User.tg_id == callback.from_user.id)
@@ -89,16 +91,18 @@ async def blocking_user(callback: CallbackQuery) -> None:
             User.select().join(UserRole).where(UserRole.role == IsAdmin.role)
         )
 
-        user_roles = (Role.select().join(UserRole)
-                      .where(UserRole.user == user_to_block))
-        roles_str = ", ".join([role.name for role in user_roles])
+        inspector_roles = (Role.select().join(UserRole)
+                           .where(UserRole.user == inspector))
+        blocker_roles_str = (", ".join([role.name for role
+                                        in inspector_roles]))
 
         admin_message = (
             f"Пользователь {user_to_block.full_name} заблокирован\n"
-            f"Роли: {roles_str}\n"
-            f"Заблокировал: {inspector.full_name}"
+            f"Заблокировал: {inspector.full_name}\n"
+            f"Роли блокирующего: {blocker_roles_str}\n"
         )
 
+        message_to_forward = None
         if callback.message.reply_to_message:
             original_msg = callback.message.reply_to_message
             if original_msg.text:
@@ -106,25 +110,38 @@ async def blocking_user(callback: CallbackQuery) -> None:
             elif original_msg.caption:
                 admin_message += f"\n\nПодпись: {original_msg.caption}"
 
+            user_message = UserMessage.get_or_none(
+                from_user=user_to_block,
+                text=original_msg.text or original_msg.caption
+            )
+            if user_message and user_message.type.name == "location":
+                for location in user_message.location:
+                    admin_message += (f"\n\nЛокация: "
+                                      f"широта: {location.latitude}, "
+                                      f"долгота: {location.longitude}")
+            elif callback.message.reply_to_message:
+                message_to_forward = (callback.message.
+                                      reply_to_message.message_id)
+
+        # Отправка сообщений админам
         for admin in admins:
             try:
                 await callback.bot.send_message(
                     chat_id=admin.tg_id,
                     text=admin_message
                 )
-
-                if callback.message.reply_to_message:
+                if message_to_forward:
                     await callback.bot.forward_message(
                         chat_id=admin.tg_id,
                         from_chat_id=callback.message.chat.id,
-                        message_id=callback.message.reply_to_message.message_id
+                        message_id=message_to_forward
                     )
             except exceptions.TelegramBadRequest as e:
                 print(f"Ошибка при отправке сообщения администратору"
-                      f" {admin.tg_id}: {e}"
-                      )
+                      f" {admin.tg_id}: {e}")
 
         await callback.answer(text="Пользователь заблокирован.")
+        await callback.message.delete()
 
     except Exception as e:
         print(f"Ошибка в blocking_user: {e}")
