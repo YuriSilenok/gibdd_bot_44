@@ -3,10 +3,9 @@
 from aiogram import Router, F
 from aiogram.types import Message, ContentType
 from filters.user import IsUser
-from handlers.eyewitness.logic import (
-    save_user_message,
-    send_message_to_employees,
-)
+from handlers.eyewitness.logic import (save_user_message,
+                                       send_message_to_employees
+                                       )
 from keyboards.eyewitness import KB as eyewitness_kb
 
 
@@ -59,7 +58,7 @@ async def get_location_from_user(message: Message) -> None:
 
 
 async def answer(message: Message):
-    """Стандартный ответ длч очевидца"""
+    """Стандартный ответ для очевидца"""
 
     await message.answer(
         text="Спасибо за обращение. "

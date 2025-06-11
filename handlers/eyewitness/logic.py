@@ -40,6 +40,14 @@ def save_user_message(message: Message) -> UserMessage:
         MessageFile.get_or_create(
             message=msg, file_id=message.photo[-1].file_id
         )
+    if message.video:
+        MessageFile.get_or_create(
+            message=msg, file_id=message.video[-1].file_id
+        )
+    if message.animation:
+        MessageFile.get_or_create(
+            message=msg, file_id=message.animation[-1].file_id
+        )
 
     if message.location:
         Location.get_or_create(
@@ -78,7 +86,7 @@ async def forward_text_message(
     return await bot.send_message(
         chat_id=employee.tg_id,
         text=user_message.text or "-",
-        reply_markup=user_ban_kb(user_id=user_message.from_user.tg_id),
+        reply_markup=user_ban_kb(user_id=user_message.from_user.id),
         reply_to_message_id=(
             prev_message.tg_message_id if prev_message else None
         ),
@@ -98,7 +106,7 @@ async def forward_photo_message(
             chat_id=employee.tg_id,
             photo=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(user_id=user_message.from_user.tg_id),
+            reply_markup=user_ban_kb(user_id=user_message.from_user.id),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -118,7 +126,7 @@ async def forward_video_message(
             chat_id=employee.tg_id,
             animation=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(user_id=user_message.from_user.tg_id),
+            reply_markup=user_ban_kb(user_id=user_message.from_user.id),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -138,7 +146,7 @@ async def forward_location_message(
             chat_id=employee.tg_id,
             latitude=location.latitude,
             longitude=location.longitude,
-            reply_markup=user_ban_kb(user_id=user_message.from_user.tg_id),
+            reply_markup=user_ban_kb(user_id=user_message.from_user.id),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -158,7 +166,7 @@ async def forward_animation_message(
             chat_id=employee.tg_id,
             animation=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(user_id=user_message.from_user.tg_id),
+            reply_markup=user_ban_kb(user_id=user_message.from_user.id),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
