@@ -3,9 +3,10 @@
 from aiogram import Router, F
 from aiogram.types import Message, ContentType
 from filters.user import IsUser
-from handlers.eyewitness.logic import (save_user_message,
-                                       send_message_to_employees
-                                       )
+from handlers.eyewitness.logic import (
+    save_user_message,
+    send_message_to_employees,
+)
 from keyboards.eyewitness import KB as eyewitness_kb
 
 

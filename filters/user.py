@@ -19,8 +19,10 @@ class IsUser(BaseFilter):
         if user.is_ban and user.ban_until and user.ban_until > datetime.now():
             ban_until_str = user.ban_until.strftime("%d-%m-%Y %H:%M")
             await message.answer(
-                text=(f"Вы не можете отправлять сообщения до срока окончания"
-                      f" бана, напишите снова после {ban_until_str}")
+                text=(
+                    f"Вы не можете отправлять сообщения до срока окончания"
+                    f" бана, напишите снова после {ban_until_str}"
+                )
             )
             return False
 
