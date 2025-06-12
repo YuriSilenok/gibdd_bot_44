@@ -41,7 +41,7 @@ async def delete_messages(callback: CallbackQuery, user: User) -> None:
                 msg.to_user.tg_id, msg.tg_message_id
             )
         except exceptions.TelegramBadRequest:
-            await callback.answer("Не удалось удалить некоторые сообщения")
+            await callback.message.answer("Не удалось удалить сообщения")
     ForwardMessage.update(is_delete=True).where(
         ForwardMessage.tg_message_id.in_([m.tg_message_id for m in messages])
     )
@@ -90,7 +90,7 @@ async def notify_admins(
                     admin.tg_id, callback.message.chat.id, msg_id
                 )
         except exceptions.TelegramBadRequest:
-            await callback.answer("Ошибка уведомления админа")
+            await callback.message.answer("Ошибка уведомления админа")
 
 
 @router.callback_query(F.data.startswith("ban_"), IsEmployee())
@@ -99,17 +99,17 @@ async def show_confirm(callback: CallbackQuery) -> None:
     try:
         user = User.get_by_id(callback.data.split("_")[-1])
         if not user:
-            await callback.answer("Пользователь не найден")
+            await callback.message.answer("Пользователь не найден")
             await callback.message.edit_reply_markup(reply_markup=None)
         elif await is_staff(user):
-            await callback.answer("Нельзя заблокировать сотрудника")
+            await callback.message.answer("Нельзя заблокировать сотрудника")
             await callback.message.edit_reply_markup(reply_markup=None)
         else:
             await callback.message.edit_reply_markup(
                 reply_markup=user_ban_cobfirm_and_cancel_kb(user_id=user.id)
             )
     except exceptions.TelegramBadRequest as e:
-        await callback.answer(f"Ошибка: {str(e)}")
+        await callback.message.answer(f"Ошибка: {str(e)}")
 
 
 @router.callback_query(F.data.startswith("user_ban_confirm_"), IsEmployee())
@@ -118,13 +118,13 @@ async def confirm_ban(callback: CallbackQuery) -> None:
     try:
         user = User.get_by_id(callback.data.split("_")[-1])
         if not user:
-            await callback.answer("Пользователь не найден")
+            await callback.message.answer("Пользователь не найден")
             await callback.message.edit_reply_markup(reply_markup=None)
         elif await is_staff(user):
-            await callback.answer("Нельзя заблокировать сотрудника")
+            await callback.message.answer("Нельзя заблокировать сотрудника")
             await callback.message.edit_reply_markup(reply_markup=None)
         elif user.is_ban and user.ban_until > datetime.now():
-            await callback.answer("Пользователь уже заблокирован")
+            await callback.message.answer("Пользователь уже заблокирован")
             await callback.message.delete()
         else:
             ban_until = await process_ban(
@@ -135,7 +135,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
             await callback.answer("Пользователь заблокирован")
             await callback.message.delete()
     except exceptions.TelegramBadRequest as e:
-        await callback.answer(f"Ошибка: {str(e)}")
+        await callback.message.answer(f"Ошибка: {str(e)}")
 
 
 @router.callback_query(F.data.startswith("user_ban_cancel_"), IsEmployee())
