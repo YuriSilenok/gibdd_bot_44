@@ -4,10 +4,19 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
+from database.models import UserRole
+
+
+def is_staff(user_id: int) -> bool:
+    """Проверка является ли пользователь сотрудником"""
+    return UserRole.select().where(UserRole.user == user_id).exists()
 
 
 def user_ban_cobfirm_and_cancel_kb(user_id: int):
-    """Подтвердение блокирования пользователя"""
+    """Подтверждение блокирования пользователя"""
+    if is_staff(user_id):
+        return InlineKeyboardMarkup(inline_keyboard=[])
+
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -25,6 +34,9 @@ def user_ban_cobfirm_and_cancel_kb(user_id: int):
 
 def user_ban_kb(user_id: int):
     """Блокирование пользователя"""
+    if is_staff(user_id):
+        return InlineKeyboardMarkup(inline_keyboard=[])
+
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
