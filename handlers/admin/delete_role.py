@@ -9,16 +9,21 @@ from filters.chief import IsChief
 router = Router()
 
 
-class IsAdminOrChief:
-    """Комбинированный фильтр для проверки ролей"""
+class AdminOrChiefFilter:
+    """Фильтр для проверки роли Администратор или Начальник"""
+
+    def __init__(self):
+        self.admin_filter = IsAdmin()
+        self.chief_filter = IsChief()
 
     async def __call__(self, callback: CallbackQuery) -> bool:
-        is_admin = await IsAdmin().check(callback.from_user.id)
-        is_chief = await IsChief().check(callback.from_user.id)
+        """Является ли пользователь администратором или начальником"""
+        is_admin = await self.admin_filter(callback)
+        is_chief = await self.chief_filter(callback)
         return is_admin or is_chief
 
 
-@router.callback_query(F.data.startswith("delete_role_"), IsAdminOrChief())
+@router.callback_query(F.data.startswith("delete_role_"), AdminOrChiefFilter())
 async def handle_role_deletion(callback: CallbackQuery):
     """Обработчик удаления роли пользователя"""
     parts = callback.data.split("_")
