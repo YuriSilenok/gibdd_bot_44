@@ -10,7 +10,7 @@ from database.models import User, UserRole
 
 # pylint: disable=R0903
 class IsEmployee(IsUser):
-    """Проверяет является ли пользователь Инспектором"""
+    """Проверяет является ли пользователь Сотрудником"""
 
     async def __call__(self, message: Message) -> bool:
         if not await super().__call__(message):
