@@ -32,10 +32,12 @@ def format_user_info(user: User) -> str:
     return "\n".join(info)
 
 
-def get_user_info_kb(user: User, current_user: User) -> InlineKeyboardMarkup:
+async def get_user_info_kb(user: User,
+                           current_user: User) -> InlineKeyboardMarkup:
     """Генерирует клавиатуру управления ролями"""
     buttons = []
-    is_chief = admin_or_chief.check_permissions(current_user, "Администратор")
+    is_chief = await admin_or_chief.check_permissions(current_user,
+                                                      "Администратор")
 
     for user_role in user.user_roles:
         if (is_chief and user_role.role.name in ["Администратор",

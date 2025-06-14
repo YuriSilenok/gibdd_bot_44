@@ -17,7 +17,8 @@ class AdminOrChiefFilter:
         is_chief = await self.chief_filter(callback)
         return is_admin or is_chief
 
-    def check_permissions(self, current_user, target_role_name: str) -> bool:
+    async def check_permissions(self, current_user,
+                                target_role_name: str) -> bool:
         """Проверяет права доступа для операций"""
-        is_chief = self.chief_filter.check(current_user.tg_id)
+        is_chief = await self.chief_filter.check(current_user.tg_id)
         return is_chief or target_role_name != "Администратор"
