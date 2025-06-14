@@ -3,7 +3,7 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, UserRole, Role
-from filters.AdminOrChief import AdminOrChiefFilter
+from filters.admin_or_chief import AdminOrChiefFilter
 
 router = Router()
 admin_or_chief = AdminOrChiefFilter()

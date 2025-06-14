@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.types import (CallbackQuery, InlineKeyboardMarkup,
                            InlineKeyboardButton)
 from database.models import User, Patrol
-from filters.AdminOrChief import AdminOrChiefFilter
+from filters.admin_or_chief import AdminOrChiefFilter
 
 router = Router()
 admin_or_chief = AdminOrChiefFilter()
@@ -35,12 +35,12 @@ def format_user_info(user: User) -> str:
 def get_user_info_kb(user: User, current_user: User) -> InlineKeyboardMarkup:
     """Генерирует клавиатуру управления ролями"""
     buttons = []
-    current_is_chief = admin_or_chief.chief_filter.check(current_user.tg_id)
+    is_chief = admin_or_chief.check_permissions(current_user, "Администратор")
 
     for user_role in user.user_roles:
-        if (current_is_chief and user_role.role.name in ["Администратор",
-                                                         "Инспектор"]) or \
-           (not current_is_chief and user_role.role.name == "Инспектор"):
+        if (is_chief and user_role.role.name in ["Администратор",
+                                                 "Инспектор"]) or \
+           (not is_chief and user_role.role.name == "Инспектор"):
             buttons.append([InlineKeyboardButton(
                 text=f"Удалить {user_role.role.name.lower()}",
                 callback_data=f"delete_role_{user_role.role.id}_{user.id}"
