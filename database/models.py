@@ -135,6 +135,15 @@ class Admin(Table):
     is_notify = BooleanField(default=False)
 
 
+class Chief(Table):
+    """Класс для хранения настроек начальника"""
+
+    user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    is_notify = BooleanField(default=True)
+    can_manage_admins = BooleanField(default=True)
+    created_at = DateTimeField(default=datetime.now())
+
+
 if __name__ == "__main__":
     DB.connect()
     DB.create_tables(
@@ -147,18 +156,21 @@ if __name__ == "__main__":
             ForwardMessage,
             Patrol,
             Admin,
+            Chief,
             MessageFile,
             Location,
         ],
         safe=True,
     )
     DB.close()
+
     admin_role, _ = Role.get_or_create(name="Администратор")
-    Role.get_or_create(name="Инспектор")
-    admin, _ = User.get_or_create(tg_id=320720102)
-    UserRole.get_or_create(
-        user=admin,
-        role=admin_role,
-    )
+    inspector_role, _ = Role.get_or_create(name="Инспектор")
+    chief_role, _ = Role.get_or_create(name="Начальник")
+
+    chief, _ = User.get_or_create(tg_id=320720102)
+    UserRole.get_or_create(user=chief, role=chief_role)
+    Chief.get_or_create(user=chief)
+
     for name in ["text", "photo", "video", "location", "animation"]:
         MessageType.get_or_create(name=name)
