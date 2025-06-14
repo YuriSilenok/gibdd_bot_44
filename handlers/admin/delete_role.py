@@ -3,27 +3,13 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, UserRole, Role
-from filters.admin import IsAdmin
-from filters.chief import IsChief
+from filters.AdminOrChief import AdminOrChiefFilter
 
 router = Router()
+admin_or_chief = AdminOrChiefFilter()
 
 
-class AdminOrChiefFilter:
-    """Фильтр для проверки роли Администратор или Начальник"""
-
-    def __init__(self):
-        self.admin_filter = IsAdmin()
-        self.chief_filter = IsChief()
-
-    async def __call__(self, callback: CallbackQuery) -> bool:
-        """Является ли пользователь администратором или начальником"""
-        is_admin = await self.admin_filter(callback)
-        is_chief = await self.chief_filter(callback)
-        return is_admin or is_chief
-
-
-@router.callback_query(F.data.startswith("delete_role_"), AdminOrChiefFilter())
+@router.callback_query(F.data.startswith("delete_role_"), admin_or_chief)
 async def handle_role_deletion(callback: CallbackQuery):
     """Обработчик удаления роли пользователя"""
     parts = callback.data.split("_")
@@ -33,12 +19,7 @@ async def handle_role_deletion(callback: CallbackQuery):
     target_user = User.get_by_id(user_id)
     role = Role.get_by_id(role_id)
 
-    is_chief = UserRole.select().where(
-        (UserRole.user == current_user)
-        & (UserRole.role == IsChief.role)
-    ).exists()
-
-    if not is_chief and role.name == "Администратор":
+    if not admin_or_chief.check_permissions(current_user, role.name):
         await callback.answer("Недостаточно прав для удаления администратора")
         return
 
@@ -47,7 +28,7 @@ async def handle_role_deletion(callback: CallbackQuery):
         & (UserRole.role == role)
     ).execute()
 
-    if deleted_count > 0:
-        await callback.answer(f"Роль {role.name} удалена")
-    else:
-        await callback.answer("Роль уже была удалена")
+    await callback.answer(
+        f"Роль {role.name} удалена" if deleted_count > 0
+        else "Роль уже была удалена"
+    )
