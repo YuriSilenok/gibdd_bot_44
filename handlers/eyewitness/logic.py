@@ -1,5 +1,6 @@
 """Общие функции для очевидца"""
 
+import functools
 from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
@@ -183,11 +184,12 @@ MESSAGE_TYPE = {
 
 
 def telegram_forbidden_error(func):
-    def wrapper(bot: Bot, user_message: UserMessage, employee: User):
+    @functools.wraps(func)
+    async def wrapper(bot: Bot, user_message: UserMessage, employee: User):
         try:
-            return func(bot, user_message, employee)
-        except TelegramForbiddenError as e:
-            print(f"Сотрудник {employee.tg_id}:{employee.full_name} заблогировал тешеграм бота")
+            return await func(bot, user_message, employee)
+        except TelegramForbiddenError:
+            print(f"Сотрудник {employee.tg_id}:{employee.full_name} заблокировал тешеграм бота")
     return wrapper
 
 
