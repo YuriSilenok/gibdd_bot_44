@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
 from aiogram.types import Message
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from filters import IsAdmin, IsInspector
 from database.models import (
     MessageType,
@@ -182,6 +182,16 @@ MESSAGE_TYPE = {
 }
 
 
+def telegram_forbidden_error(func):
+    def wrapper(bot: Bot, user_message: UserMessage, employee: User):
+        try:
+            return func(bot, user_message, employee)
+        except TelegramForbiddenError as e:
+            print(f"Сотрудник {employee.tg_id}:{employee.full_name} заблогировал тешеграм бота")
+    return wrapper
+
+
+@telegram_forbidden_error
 async def send_message_to_employee(
     bot: Bot, user_message: UserMessage, employee: User
 ) -> ForwardMessage:
