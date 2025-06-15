@@ -187,7 +187,10 @@ def telegram_forbidden_error(func):
         try:
             return func(bot, user_message, employee)
         except TelegramForbiddenError as e:
-            print(f"Сотрудник {employee.tg_id}:{employee.full_name} заблогировал тешеграм бота")
+            print(
+                f"Сотрудник {employee.tg_id}:{employee.full_name} заблогировал тешеграм бота"
+            )
+
     return wrapper
 
 
