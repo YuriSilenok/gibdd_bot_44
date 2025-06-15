@@ -227,6 +227,11 @@ async def send_message_to_employee(
             prev_message=prev_forward_message,
             employee=employee,
         )
+    
+    # сообщение не было переслано
+    if message is None:
+        return None
+    
     if prev_forward_message and message.reply_to_message is None:
         prev_forward_message.is_delete = True
         prev_forward_message.save()
