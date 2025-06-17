@@ -40,7 +40,7 @@ class User(Table):
     @property
     def full_name(self):
         """Возвращает полное имя пользователя."""
-        return f"{self.first_name or ''} {self.last_name or ''}".strip()
+        return f"@{self.username or ''} {self.first_name or ''} {self.last_name or ''}".strip()
 
 
 class Role(Table):

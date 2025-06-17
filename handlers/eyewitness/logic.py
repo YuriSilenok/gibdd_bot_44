@@ -1,10 +1,11 @@
 """Общие функции для очевидца"""
 
+import functools
 from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
 from aiogram.types import Message
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from filters import IsAdmin, IsInspector
 from database.models import (
     MessageType,
@@ -182,6 +183,20 @@ MESSAGE_TYPE = {
 }
 
 
+def telegram_forbidden_error(func):
+    @functools.wraps(func)
+    async def wrapper(bot: Bot, user_message: UserMessage, employee: User):
+        try:
+            return await func(bot, user_message, employee)
+        except TelegramForbiddenError:
+            print(
+                f"Сотрудник {employee.tg_id}:{employee.full_name} заблокировал телеграм бота"
+            )
+
+    return wrapper
+
+
+@telegram_forbidden_error
 async def send_message_to_employee(
     bot: Bot, user_message: UserMessage, employee: User
 ) -> ForwardMessage:
@@ -227,6 +242,11 @@ async def send_message_to_employee(
             prev_message=prev_forward_message,
             employee=employee,
         )
+
+    # сообщение не было переслано
+    if message is None:
+        return None
+
     if prev_forward_message and message.reply_to_message is None:
         prev_forward_message.is_delete = True
         prev_forward_message.save()
