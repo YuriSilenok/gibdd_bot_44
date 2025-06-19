@@ -16,8 +16,8 @@ async def handle_role_deletion(callback: CallbackQuery):
 
     parts: List[str] = callback.data.split(sep="_")
 
-    role_id = int(x=parts[-2])
-    user_id = int(x=parts[-1])
+    role_id = int(parts[-2])
+    user_id = int(parts[-1])
 
     role: Role = Role.get_by_id(pk=role_id)
     user: User = User.get_by_id(pk=user_id)

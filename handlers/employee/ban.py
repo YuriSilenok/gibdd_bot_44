@@ -50,7 +50,7 @@ async def show_confirm(callback: CallbackQuery) -> None:
     """Показать подтверждение бана"""
 
     try:
-        user_message_id = int(x=callback.data.split(sep="_")[-1])
+        user_message_id = int(callback.data.split(sep="_")[-1])
         user_message: UserMessage = UserMessage.get_by_id(pk=user_message_id)
         user: User = user_message.from_user
 
@@ -77,7 +77,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
 
     try:
         employee: User = User.get(tg_id=callback.from_user.id)
-        user_message_id = int(x=callback.data.split(sep="_")[-1])
+        user_message_id = int(callback.data.split(sep="_")[-1])
         user_message: UserMessage = UserMessage.get_by_id(pk=user_message_id)
         user_banned: User = user_message.from_user
 
@@ -133,7 +133,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
 async def cancel_ban(callback: CallbackQuery) -> None:
     """Отмена бана"""
 
-    user_message_id = int(x=callback.data.split(sep="_")[-1])
+    user_message_id = int(callback.data.split(sep="_")[-1])
     await callback.message.edit_reply_markup(
         reply_markup=user_ban_kb(
             user_message=UserMessage.get_by_id(pk=user_message_id)

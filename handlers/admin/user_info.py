@@ -14,7 +14,7 @@ router = Router()
 async def handle_user_info(callback: CallbackQuery) -> None:
     """Обработчик просмотра информации о пользователе"""
 
-    user_id = int(x=callback.data.split(sep="_")[-1])
+    user_id = int(callback.data.split(sep="_")[-1])
     user: User = User.get_by_id(pk=user_id)
 
     await callback.message.edit_text(

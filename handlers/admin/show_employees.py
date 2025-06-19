@@ -27,8 +27,8 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
     """Обрабатывает переход по страницам инспекторов"""
 
     args: List[str] = callback.data.split(sep="_")
-    page = int(x=args[-1])
-    role_id = int(x=args[-2])
+    page = int(args[-1])
+    role_id = int(args[-2])
     role: Role = Role.get_by_id(pk=role_id)
 
     await callback.message.edit_reply_markup(
