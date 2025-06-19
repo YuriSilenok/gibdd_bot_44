@@ -167,26 +167,22 @@ if __name__ == "__main__":
     )
     DB.close()
 
-    chaif_role, _ = Role.get_or_create(name='Начальник')
+    chaif_role, _ = Role.get_or_create(name="Начальник")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=320720102),
-        role=chaif_role
+        user=User.get_or_create(tg_id=320720102), role=chaif_role
     )
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=1184815759),
-        role=chaif_role
+        user=User.get_or_create(tg_id=1184815759), role=chaif_role
     )
 
     admin_role, _ = Role.get_or_create(name="Администратор")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=5222414319),
-        role=admin_role
+        user=User.get_or_create(tg_id=5222414319), role=admin_role
     )
 
     inspector_role, _ = Role.get_or_create(name="Инспектор")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=7358118335),
-        role=admin_role
+        user=User.get_or_create(tg_id=7358118335), role=admin_role
     )
     User.get_or_create(tg_id=1433380320)
 
