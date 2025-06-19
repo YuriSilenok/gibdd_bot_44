@@ -182,7 +182,7 @@ if __name__ == "__main__":
 
     inspector_role, _ = Role.get_or_create(name="Инспектор")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=7358118335)[0], role=admin_role
+        user=User.get_or_create(tg_id=7358118335)[0], role=inspector_role
     )
     User.get_or_create(tg_id=1433380320)
 
