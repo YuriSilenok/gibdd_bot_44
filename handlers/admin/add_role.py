@@ -9,7 +9,7 @@ from states.admin.inspector import AddInspector
 from states.admin.admin import AddAdmin
 from filters.admin import IsAdmin
 from filters.inspector import IsInspector
-from database.models import User, UserRole, Admin
+from database.models import Admin
 
 router = Router()
 

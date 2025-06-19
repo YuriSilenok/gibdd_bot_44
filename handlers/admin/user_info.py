@@ -4,7 +4,6 @@ from typing import List
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, Patrol
-from filters import inspector
 from filters.admin import IsAdmin
 from keyboards.admin.user_info import get_user_info_kb
 
