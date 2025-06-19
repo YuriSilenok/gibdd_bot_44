@@ -38,9 +38,14 @@ class User(Table):
     ban_until = DateTimeField(null=True)
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         """Возвращает полное имя пользователя."""
         return f"@{self.username or ''} {self.first_name or ''} {self.last_name or ''}".strip()
+    
+    @property
+    def ban_until_strf(self) -> str:
+        """Возращает дату и время бана в формете"""
+        self.strftime("%d-%m-%Y %H")
 
 
 class Role(Table):
@@ -69,7 +74,7 @@ class MessageType(Table):
 class UserMessage(Table):
     """Класс сообщений пользователя"""
 
-    from_user = ForeignKeyField(
+    from_user: User = ForeignKeyField(
         model=User,
         on_update="CASCADE",
         on_delete="CASCADE",
@@ -89,7 +94,11 @@ class ForwardMessage(Table):
     user_message = ForeignKeyField(
         model=UserMessage, on_update="CASCADE", on_delete="CASCADE"
     )
-    to_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    to_user: User = ForeignKeyField(
+        model=User,
+        on_update="CASCADE",
+        on_delete="CASCADE",
+    )
     at_created = DateTimeField(default=datetime.now())
     tg_message_id = IntegerField()
     is_delete = BooleanField(default=False)

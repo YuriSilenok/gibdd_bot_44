@@ -1,7 +1,7 @@
 """Подключение роутеров"""
 
 from aiogram import Dispatcher
-from .user_ban import router as user_ban_router
+from .ban import router as user_ban_router
 
 
 def add_routers(dp: Dispatcher):

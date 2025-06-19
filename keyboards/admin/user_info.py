@@ -1,11 +1,14 @@
 """Клавиатура управления ролями пользователя"""
 
+from typing import List
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from database.models import User
 
-def get_user_info_kb(user):
+
+def get_user_info_kb(user: User) -> InlineKeyboardMarkup:
     """Генерирует клавиатуру с кнопками удаления ролей"""
-    buttons = []
+    buttons: List = []
     for user_role in user.user_roles:
         buttons.append(
             [

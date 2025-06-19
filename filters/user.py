@@ -12,24 +12,32 @@ class IsUser(BaseFilter):
     role = None
 
     async def __call__(self, message: Message) -> bool:
-        user = User.get_or_none(tg_id=message.from_user.id)
+        """Проверяет что пользователь существует в системе 
+        и его бан статус"""
+
+        user: User = User.get_or_none(tg_id=message.from_user.id)
+
         if user is None:
             return False
 
         if user.is_ban and user.ban_until and user.ban_until > datetime.now():
-            ban_until_str = user.ban_until.strftime("%d-%m-%Y %H:%M")
+
+            ban_until: str = user.ban_until.strftime("%d-%m-%Y %H:%M")
+
             await message.answer(
                 text=(
                     f"Вы не можете отправлять сообщения до срока окончания"
-                    f" бана, напишите снова после {ban_until_str}"
+                    f" бана, напишите снова после {ban_until}"
                 )
             )
+
             return False
 
         if self.role is None:
             return True
 
-        user_role = UserRole.get_or_none(
+        user_role: UserRole = UserRole.get_or_none(
             user=User.get(tg_id=message.from_user.id), role=self.role
         )
+
         return user_role is not None

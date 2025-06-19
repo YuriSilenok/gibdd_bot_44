@@ -1,5 +1,6 @@
 """Обработчик удаления ролей пользователя"""
 
+from typing import List
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, UserRole, Role
@@ -13,27 +14,24 @@ router = Router()
 async def handle_role_deletion(callback: CallbackQuery):
     """Обрабатывает удаление роли пользователя"""
 
-    parts = callback.data.split("_")
-    if len(parts) < 3:
-        print("Неверный формат callback_data")
-        return
+    parts: List[str] = callback.data.split(sep="_")
 
-    role_id = parts[-2]
-    user_id = parts[-1]
+    role_id = int(x=parts[-2])
+    user_id = int(x=parts[-1])
 
-    role = Role.get_by_id(int(role_id))
-    user = User.get_by_id(int(user_id))
+    role: Role = Role.get_by_id(pk=role_id)
+    user: User = User.get_by_id(pk=user_id)
 
-    deleted_count = (
+    deleted_count: int = (
         UserRole.delete()
         .where((UserRole.user == user) & (UserRole.role == role))
         .execute()
     )
 
     if deleted_count > 0:
-        await callback.message.answer(f"Роль {role.name} удалена")
+        await callback.message.answer(text=f"Роль {role.name} удалена")
         await handle_user_info(callback)
     else:
         await callback.message.answer(
-            f"Роль {role.name} уже была удалена ранее"
+            text=f"Роль {role.name} уже была удалена ранее"
         )

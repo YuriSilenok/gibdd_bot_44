@@ -1,5 +1,6 @@
 """Клавиатуры для Администратора"""
 
+from typing import List
 from aiogram.types import (
     KeyboardButton,
     ReplyKeyboardMarkup,
@@ -10,7 +11,7 @@ from database.models import User, Admin, Role, UserRole, Patrol
 from filters.inspector import IsInspector
 
 
-ADMIN_KEYBOARD = [
+ADMIN_KEYBOARD: List[List[KeyboardButton]] = [
     [
         KeyboardButton(text="Добавить инспектора"),
         KeyboardButton(text="Показать инспекторов"),
@@ -22,11 +23,11 @@ ADMIN_KEYBOARD = [
 ]
 
 
-def get_keyboard_by_user(user: User):
+def get_keyboard_by_user(user: User) -> List[List[KeyboardButton]]:
     """Кнопки для клавиатуры администратора"""
 
     admin: Admin = Admin.get_or_none(user=user)
-    keyboard = ADMIN_KEYBOARD + [
+    return ADMIN_KEYBOARD + [
         [
             (
                 KeyboardButton(text="Не получать сообщения очевидцев")
@@ -35,31 +36,32 @@ def get_keyboard_by_user(user: User):
             )
         ]
     ]
-    return keyboard
 
 
-def get_kb_by_user(user: User):
+def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
     """Клавиатура администратора"""
-    keyboard = get_keyboard_by_user(user)
+
     return ReplyKeyboardMarkup(
-        keyboard=keyboard,
+        keyboard=get_keyboard_by_user(user=user),
         resize_keyboard=True,
     )
 
 
-def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
+def get_kb_by_show_employees(
+        role: Role,
+        page: int,
+        limit: int = 10
+) -> InlineKeyboardMarkup:
     """Возвращает клавиатуру пользователей"""
 
-    role_object = role if isinstance(role, Role) else Role.get_by_id(role)
-
     inspector_in_patrol = set()
-    if IsInspector.role == role_object:
+    if IsInspector.role == role:
         inspector_in_patrol = {
             p.inspector.id
             for p in Patrol.select().where(Patrol.end.is_null()).execute()
         }
 
-    inline_keyboard = [
+    inline_keyboard: List[List[InlineKeyboardButton]] = [
         [
             InlineKeyboardButton(
                 text=(
@@ -70,7 +72,7 @@ def get_kb_by_show_employees(role: Role, page: int, limit: int = 10):
             )
         ]
         for ur in UserRole.select()
-        .where(UserRole.role == role_object)
+        .where(UserRole.role == role)
         .offset((page - 1) * limit)
         .limit(limit)
     ]
