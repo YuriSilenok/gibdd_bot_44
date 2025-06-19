@@ -167,7 +167,7 @@ if __name__ == "__main__":
     )
     DB.close()
 
-    chaif_role, _ = Role.get_or_create(name='Начальник')
+    chaif_role, _ = Role.get_or_create(name="Начальник")
     UserRole.get_or_create(
         user=User.get_or_create(tg_id=320720102)[0],
         role=chaif_role
