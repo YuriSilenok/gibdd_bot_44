@@ -185,6 +185,7 @@ MESSAGE_TYPE = {
 
 
 def telegram_forbidden_error(func):
+    """Декоратор для обработки заблокированного бота"""
     @functools.wraps(func)
     async def wrapper(bot: Bot, user_message: UserMessage, employee: User):
         try:

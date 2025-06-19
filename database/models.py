@@ -49,7 +49,7 @@ class User(Table):
     @property
     def ban_until_strf(self) -> str:
         """Возращает дату и время бана в формете"""
-        self.strftime("%d-%m-%Y %H")
+        self.ban_until.strftime("%d-%m-%Y %H")
 
 
 class Role(Table):

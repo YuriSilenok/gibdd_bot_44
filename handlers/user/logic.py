@@ -1,3 +1,5 @@
+"""Бизнеслогика для пользователя"""
+
 from datetime import datetime
 from typing import List
 from aiogram import Bot
@@ -8,7 +10,7 @@ from database.models import ForwardMessage, User
 async def notify_users(
     bot: Bot,
     users: List[User],
-    message: str,
+    text: str,
     forward_message: ForwardMessage = None,
 ) -> None:
     """Уведомить пользователей"""
@@ -20,7 +22,7 @@ async def notify_users(
             )
             await bot.send_message(
                 chat_id=user.tg_id,
-                text=message,
+                text=text,
                 reply_to_message_id=reply_to_message_id,
             )
         except TelegramForbiddenError:

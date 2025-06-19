@@ -1,3 +1,5 @@
+"""Бизнес-логика для алминистратора"""
+
 from typing import Tuple, List
 from aiogram.types.contact import Contact
 
