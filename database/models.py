@@ -169,23 +169,23 @@ if __name__ == "__main__":
 
     chaif_role, _ = Role.get_or_create(name='Начальник')
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=320720102),
+        user=User.get_or_create(tg_id=320720102)[0],
         role=chaif_role
     )
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=1184815759),
+        user=User.get_or_create(tg_id=1184815759)[0],
         role=chaif_role
     )
 
     admin_role, _ = Role.get_or_create(name="Администратор")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=5222414319),
+        user=User.get_or_create(tg_id=5222414319)[0],
         role=admin_role
     )
 
     inspector_role, _ = Role.get_or_create(name="Инспектор")
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=7358118335),
+        user=User.get_or_create(tg_id=7358118335)[0],
         role=admin_role
     )
     User.get_or_create(tg_id=1433380320)
