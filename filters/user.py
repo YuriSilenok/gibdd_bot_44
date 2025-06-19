@@ -12,7 +12,7 @@ class IsUser(BaseFilter):
     role = None
 
     async def __call__(self, message: Message) -> bool:
-        """Проверяет что пользователь существует в системе 
+        """Проверяет что пользователь существует в системе
         и его бан статус"""
 
         user: User = User.get_or_none(tg_id=message.from_user.id)
