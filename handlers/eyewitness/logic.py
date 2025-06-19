@@ -88,9 +88,7 @@ async def forward_text_message(
     return await bot.send_message(
         chat_id=employee.tg_id,
         text=user_message.text or "-",
-        reply_markup=user_ban_kb(
-            user_message=user_message
-        ),
+        reply_markup=user_ban_kb(user_message=user_message),
         reply_to_message_id=(
             prev_message.tg_message_id if prev_message else None
         ),
@@ -110,9 +108,7 @@ async def forward_photo_message(
             chat_id=employee.tg_id,
             photo=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(
-                user_message=user_message
-            ),
+            reply_markup=user_ban_kb(user_message=user_message),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -132,9 +128,7 @@ async def forward_video_message(
             chat_id=employee.tg_id,
             animation=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(
-                user_message=user_message
-            ),
+            reply_markup=user_ban_kb(user_message=user_message),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -154,9 +148,7 @@ async def forward_location_message(
             chat_id=employee.tg_id,
             latitude=location.latitude,
             longitude=location.longitude,
-            reply_markup=user_ban_kb(
-                user_message=user_message
-            ),
+            reply_markup=user_ban_kb(user_message=user_message),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -176,9 +168,7 @@ async def forward_animation_message(
             chat_id=employee.tg_id,
             animation=file.file_id,
             caption=user_message.text,
-            reply_markup=user_ban_kb(
-                user_message=user_message
-            ),
+            reply_markup=user_ban_kb(user_message=user_message),
             reply_to_message_id=(
                 prev_message.tg_message_id if prev_message else None
             ),
@@ -203,7 +193,7 @@ def telegram_forbidden_error(func):
             print(
                 datetime.now(),
                 f"Сотрудник {employee.tg_id}:{employee.full_name} "
-                "заблокировал телеграм бота"
+                "заблокировал телеграм бота",
             )
 
     return wrapper
@@ -211,8 +201,10 @@ def telegram_forbidden_error(func):
 
 @telegram_forbidden_error
 async def send_message_to_employee(
-    bot: Bot, user_message: UserMessage, employee: User,
-    restore_message_chain: bool = True
+    bot: Bot,
+    user_message: UserMessage,
+    employee: User,
+    restore_message_chain: bool = True,
 ) -> ForwardMessage:
     """Переслать сообщение очевидца конкретному сотруднику"""
 
@@ -226,11 +218,7 @@ async def send_message_to_employee(
             to_user=employee,
             is_delete=False,
         )
-    if (
-        prev_message
-        and prev_forward_message is None
-        and restore_message_chain
-    ):
+    if prev_message and prev_forward_message is None and restore_message_chain:
         prev_forward_message = await send_message_to_employee(
             bot=bot,
             user_message=prev_message,
@@ -250,11 +238,15 @@ async def send_message_to_employee(
         prev_forward_message.is_delete = True
         prev_forward_message.save()
 
-        prev_forward_message = await send_message_to_employee(
-            bot=bot,
-            user_message=prev_message,
-            employee=employee,
-        ) if restore_message_chain else None
+        prev_forward_message = (
+            await send_message_to_employee(
+                bot=bot,
+                user_message=prev_message,
+                employee=employee,
+            )
+            if restore_message_chain
+            else None
+        )
 
         message: Message = await MESSAGE_TYPE[user_message.type.name](
             bot=bot,

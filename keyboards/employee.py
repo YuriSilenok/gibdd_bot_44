@@ -9,7 +9,7 @@ from database.models import UserMessage
 
 
 def user_ban_cobfirm_and_cancel_kb(
-        user_message: UserMessage
+    user_message: UserMessage,
 ) -> InlineKeyboardMarkup:
     """Подтвердение блокирования пользователя"""
 

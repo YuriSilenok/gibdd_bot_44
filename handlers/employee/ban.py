@@ -24,9 +24,9 @@ async def delete_messages(callback: CallbackQuery, user: User) -> None:
     """Удаление сообщений пользователя"""
 
     messages: List[ForwardMessage] = list(
-        ForwardMessage.select().join(UserMessage).where(
-            (UserMessage.from_user == user) & (~ForwardMessage.is_delete)
-        )
+        ForwardMessage.select()
+        .join(UserMessage)
+        .where((UserMessage.from_user == user) & (~ForwardMessage.is_delete))
     )
     for message in messages:
         try:
@@ -119,7 +119,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
                     f"Пользователь {user_banned.full_name} заблокирован\n"
                     f"Заблокировал: {employee.full_name}\n"
                     f"Бан до: {user_banned.ban_until_strf}"
-                )
+                ),
             )
 
             await callback.answer(text="Пользователь заблокирован")
@@ -136,8 +136,6 @@ async def cancel_ban(callback: CallbackQuery) -> None:
     user_message_id = int(x=callback.data.split(sep="_")[-1])
     await callback.message.edit_reply_markup(
         reply_markup=user_ban_kb(
-            user_message=UserMessage.get_by_id(
-                pk=user_message_id
-            )
+            user_message=UserMessage.get_by_id(pk=user_message_id)
         )
     )
