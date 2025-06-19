@@ -29,5 +29,5 @@ async def end_patrol(message: Message):
     else:
         await message.answer(
             text="Вы уже не в патруле",
-            reply_markup=get_kb_by_user(user=inspector)
+            reply_markup=get_kb_by_user(user=inspector),
         )

@@ -39,8 +39,5 @@ def get_admins_for_notify() -> List[User]:
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Admin, on=Admin.user == User.id)
-        .where(
-            (UserRole.role == IsAdmin.role)
-            & (Admin.is_notify)
-        )
+        .where((UserRole.role == IsAdmin.role) & (Admin.is_notify))
     )
