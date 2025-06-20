@@ -32,7 +32,7 @@ def get_keyboard_by_user(user: User) -> List[List[KeyboardButton]]:
             (
                 KeyboardButton(text="Не получать сообщения очевидцев")
                 if admin and admin.is_notify
-                else KeyboardButton(text="Получать соощения очевидцев")
+                else KeyboardButton(text="Получать сообщения очевидцев")
             )
         ]
     ]

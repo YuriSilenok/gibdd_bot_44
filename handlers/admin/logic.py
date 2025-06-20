@@ -10,7 +10,10 @@ from filters.admin import IsAdmin
 def add_role(contact: Contact, role: Role) -> Tuple[UserRole, bool, User]:
     """Добавить существующему контакту роль"""
 
-    user: User = User.get(tg_id=contact.user_id)
+    user: User = User.get_or_none(tg_id=contact.user_id)
+
+    if user is None:
+        return None, None, None
 
     if contact.last_name and user.last_name != contact.last_name:
         user.last_name = contact.last_name

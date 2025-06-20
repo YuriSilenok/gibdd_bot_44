@@ -9,7 +9,7 @@ from keyboards.common import get_kb_by_user
 router = Router()
 
 
-@router.message(F.text == "Получать соощения очевидцев", IsAdmin())
+@router.message(F.text == "Получать сообщения очевидцев", IsAdmin())
 async def enable_notifications(message: Message):
     """Включает получения сообщей очевидцев"""
 

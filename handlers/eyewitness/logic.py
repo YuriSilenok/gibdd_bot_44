@@ -188,15 +188,22 @@ def telegram_forbidden_error(func):
     """Декоратор для обработки заблокированного бота"""
 
     @functools.wraps(func)
-    async def wrapper(bot: Bot, user_message: UserMessage, employee: User):
+    async def wrapper(*args, **qwargs):
         try:
-            return await func(bot, user_message, employee)
+            return await func(*args, **qwargs)
         except TelegramForbiddenError:
-            print(
-                datetime.now(),
-                f"Сотрудник {employee.tg_id}:{employee.full_name} "
-                "заблокировал телеграм бота",
-            )
+            employee = qwargs.get('employee', None)
+            if employee:
+                print(
+                    datetime.now(),
+                    f"Сотрудник {employee.tg_id}:{employee.full_name} "
+                    "заблокировал телеграм бота",
+                )
+            else:
+                print(
+                    datetime.now(),
+                    "Сотрудник заблокировал телеграм бота",
+                )
 
     return wrapper
 

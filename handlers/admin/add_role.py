@@ -32,9 +32,15 @@ async def get_admin_contact(message: Message, state: FSMContext):
         role=IsAdmin.role,
     )
 
+    if user is None:
+        await message.answer(
+            text="Пользователь с таким контактом не запускал бота"
+        )
+        return
+
     if not user_role_is_added:
         await message.answer(
-            "Этому сотруднику уже выдавалась роль администратора"
+            text="Этому сотруднику уже выдавалась роль администратора"
         )
     else:
         Admin.get_or_create(user=user)
@@ -59,7 +65,11 @@ async def get_inspector_contact(message: Message, state: FSMContext):
         contact=contact,
         role=IsInspector.role,
     )
-    if not user:
+
+    if user is None:
+        await message.answer(
+            text="Пользователь с таким контактом не запускал бота"
+        )
         return
 
     if not user_role_is_added:
