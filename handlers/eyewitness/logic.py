@@ -192,7 +192,7 @@ def telegram_forbidden_error(func):
         try:
             return await func(*args, **qwargs)
         except TelegramForbiddenError:
-            employee = qwargs.get('employee', None)
+            employee = qwargs.get("employee", None)
             if employee:
                 print(
                     datetime.now(),

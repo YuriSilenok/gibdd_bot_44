@@ -41,8 +41,10 @@ class User(Table):
     def full_name(self) -> str:
         """Возвращает полное имя пользователя."""
         return (
-            f"@{self.username or ''}".strip() + " "
-            + f"{self.first_name or ''}".strip() + " "
+            f"@{self.username or ''}".strip()
+            + " "
+            + f"{self.first_name or ''}".strip()
+            + " "
             + f"{self.last_name or ''}".strip()
         )
 
