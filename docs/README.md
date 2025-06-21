@@ -2,6 +2,7 @@
 
 - `py -3.8 -m venv .venv`
 - `.venv\Scripts\activate`
+- `py -m pip install -U pip`
 - `pip install -e .`
 - создать файл `.env` c содержимым: `TOKEN="токен телеграм бота"`
 - `py -m database.models`
