@@ -126,7 +126,7 @@ async def forward_video_message(
     for file in user_message.file:
         return await bot.send_video(
             chat_id=employee.tg_id,
-            animation=file.file_id,
+            video=file.file_id,
             caption=user_message.text,
             reply_markup=user_ban_kb(user_message=user_message),
             reply_to_message_id=(
