@@ -15,5 +15,5 @@ def get_patrol(inspector: User) -> Patrol:
             (Patrol.inspector == inspector)
             & (Patrol.end.is_null())
             & (UserRole.role == IsInspector.role)
-        )
+        ).first()
     )
