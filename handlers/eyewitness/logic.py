@@ -37,7 +37,7 @@ def save_user_message(message: Message) -> UserMessage:
         type=MessageType.get(name=message.content_type),
     )[0]
 
-    if message.photo or message.video or message.animation:
+    if message.photo:
         MessageFile.get_or_create(
             message=msg, file_id=message.photo[-1].file_id
         )
