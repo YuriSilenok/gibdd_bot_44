@@ -43,11 +43,11 @@ def save_user_message(message: Message) -> UserMessage:
         )
     if message.video:
         MessageFile.get_or_create(
-            message=msg, file_id=message.video[-1].file_id
+            message=msg, file_id=message.video.file_id
         )
     if message.animation:
         MessageFile.get_or_create(
-            message=msg, file_id=message.animation[-1].file_id
+            message=msg, file_id=message.animation.file_id
         )
 
     if message.location:
