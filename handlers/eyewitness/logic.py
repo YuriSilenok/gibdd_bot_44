@@ -27,7 +27,7 @@ from keyboards.employee import user_ban_kb
 def save_user_message(message: Message) -> UserMessage:
     """Сохранние сообщения в БД"""
 
-    msg: UserMessage = UserMessage.get_or_create(
+    msg: UserMessage = UserMessage.create(
         from_user=User.get(tg_id=message.from_user.id),
         text=(
             message.text
@@ -35,7 +35,7 @@ def save_user_message(message: Message) -> UserMessage:
             else message.caption if message.photo or message.video else None
         ),
         type=MessageType.get(name=message.content_type),
-    )[0]
+    )
 
     if message.photo:
         MessageFile.get_or_create(
