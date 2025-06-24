@@ -116,8 +116,8 @@ async def confirm_ban(callback: CallbackQuery) -> None:
                 bot=callback.bot,
                 users=admins,
                 text=(
-                    f"Пользователь {user_banned.full_name} заблокирован\n"
-                    f"Заблокировал: {employee.full_name}\n"
+                    f"Пользователь {user_banned} заблокирован\n"
+                    f"Заблокировал: {employee}\n"
                     f"Бан до: {user_banned.ban_until_strf}"
                 ),
             )

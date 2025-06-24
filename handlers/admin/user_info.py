@@ -29,10 +29,12 @@ def format_user_info(user: User) -> str:
 
     roles: List = [ur.role.name for ur in user.user_roles]
 
+    username = f"@{user.username}" if user.username else None
+
     info_lines: List[str] = [
         "<b>Информация о пользователе:</b>",
         f"ID: {user.tg_id}",
-        f"Username: @{user.username or 'не указан'}",
+        f"Username: {username or 'не указан'}",
         f"Имя: {user.first_name or 'не указано'}",
         f"Фамилия: {user.last_name or 'не указана'}",
         f"Роли: {', '.join(roles) or 'нет'}",

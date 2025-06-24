@@ -62,10 +62,11 @@ def get_kb_by_show_employees(
     inline_keyboard: List[List[InlineKeyboardButton]] = [
         [
             InlineKeyboardButton(
-                text=(
-                    f"{'🚨 ' if ur.user.id in inspector_in_patrol else ''}"
-                    f"{ur.user.full_name}"
-                ),
+                text=" ".join([
+                    f"🚨" if ur.user.id in inspector_in_patrol else "",
+                    f"@{ur.user.username}" if ur.user.username else "",
+                    f"{ur.user.full_name}",
+                ]),
                 callback_data=f"user_info_{ur.user.id}",
             )
         ]

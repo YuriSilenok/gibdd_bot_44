@@ -41,17 +41,28 @@ class User(Table):
     def full_name(self) -> str:
         """Возвращает полное имя пользователя."""
         return (
-            f"@{self.username or ''}".strip()
-            + " "
-            + f"{self.first_name or ''}".strip()
+            f"{self.first_name or ''}".strip()
             + " "
             + f"{self.last_name or ''}".strip()
         )
+
 
     @property
     def ban_until_strf(self) -> str:
         """Возращает дату и время бана в формете"""
         return self.ban_until.strftime("%d-%m-%Y %H:%M")
+
+
+    def __str__(self) -> str:
+        """Строкове представление объекта"""
+        result = [str(self.tg_id)]
+
+        if self.username:
+            result.append(f"@{self.username}")
+
+        result.append(self.full_name)
+
+        return ", ".join(result)
 
 
 class Role(Table):
