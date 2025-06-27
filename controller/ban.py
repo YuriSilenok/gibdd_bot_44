@@ -1,7 +1,7 @@
 """Функции относящиеся к сотрудникам"""
 
 from datetime import datetime, timedelta
-from database.models import User, UserRole
+from database.models import User
 
 
 def ban_user(user_banned: User) -> None:
