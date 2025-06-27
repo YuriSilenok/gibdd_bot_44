@@ -287,7 +287,10 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Patrol, on=Patrol.inspector == User.id)
-        .where((UserRole.role == Role.get(name="Инспектор")) & (Patrol.end.is_null()))
+        .where(
+            (UserRole.role == Role.get(name="Инспектор"))
+            & (Patrol.end.is_null())
+        )
     )
 
     for patrole in patroles:
@@ -300,7 +303,10 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Admin, on=Admin.user == User.id)
-        .where((Admin.is_notify) & (UserRole.role == Role.get(name="Администратор")))
+        .where(
+            (Admin.is_notify)
+            & (UserRole.role == Role.get(name="Администратор"))
+        )
     )
 
     for admin in admins:

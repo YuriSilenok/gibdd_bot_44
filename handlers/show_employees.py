@@ -11,8 +11,7 @@ router = Router()
 
 
 @router.message(
-    F.text == "Показать инспекторов",
-    Permition("Показать инспекторов")
+    F.text == "Показать инспекторов", Permition("Показать инспекторов")
 )
 async def show_inspectors(message: Message) -> None:
     """Отображает список инспекторов администратору."""
@@ -20,13 +19,14 @@ async def show_inspectors(message: Message) -> None:
     await message.answer(
         text="<b>Список инспекторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(role=Role.get(name='Инспектор'), page=1),
+        reply_markup=get_kb_by_show_employees(
+            role=Role.get(name="Инспектор"), page=1
+        ),
     )
 
 
 @router.callback_query(
-    F.data.startswith("users_page_"),
-    Permition("Показать инспекторов")
+    F.data.startswith("users_page_"), Permition("Показать инспекторов")
 )
 async def go_to_page_handler(callback: CallbackQuery) -> None:
     """Обрабатывает переход по страницам инспекторов"""
@@ -45,8 +45,7 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
 
 
 @router.message(
-    F.text == "Показать администраторов",
-    Permition("Показать администраторов")
+    F.text == "Показать администраторов", Permition("Показать администраторов")
 )
 async def show_admins(message: Message):
     """Отображает список администраторов администратору."""
@@ -54,5 +53,7 @@ async def show_admins(message: Message):
     await message.answer(
         text="<b>Список администраторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(role=Role.get(name="Администратор"), page=1),
+        reply_markup=get_kb_by_show_employees(
+            role=Role.get(name="Администратор"), page=1
+        ),
     )

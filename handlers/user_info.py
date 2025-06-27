@@ -12,7 +12,7 @@ router = Router()
 
 @router.callback_query(
     F.data.startswith("user_info_"),
-    Permition('Показать информацию о пользователе')
+    Permition("Показать информацию о пользователе"),
 )
 async def handle_user_info(callback: CallbackQuery) -> None:
     """Обработчик просмотра информации о пользователе"""
