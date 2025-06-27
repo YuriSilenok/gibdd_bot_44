@@ -147,7 +147,7 @@ class MessageFile(Table):
 class Patrol(Table):
     """Класс для сообщения о выезде инспектора"""
 
-    inspector = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    inspector = ForeignKeyField(User, backref="patrol", on_update="CASCADE", on_delete="CASCADE")
     start = DateTimeField(default=datetime.now())
     end = DateTimeField(null=True)
 

@@ -7,8 +7,10 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
+from peewee import DoesNotExist
 from database.models import User, Admin, Role, UserRole, Patrol
 from filters.inspector import IsInspector
+from handlers.inspector.logic import get_patrol
 
 
 ADMIN_KEYBOARD: List[List[KeyboardButton]] = [
@@ -46,37 +48,42 @@ def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
         resize_keyboard=True,
     )
 
+def get_inspectors() -> List[User]:
+    """Получить инспекторов"""
+
+    return (
+        User.select(User)
+        .join(UserRole, on=UserRole.user == User.id)
+        .where(
+            (UserRole.role == IsInspector.role)
+        )
+    )
+
 
 def get_kb_by_show_employees(
     role: Role, page: int, limit: int = 10
 ) -> InlineKeyboardMarkup:
     """Возвращает клавиатуру пользователей"""
 
-    inspector_in_patrol = set()
-    if IsInspector.role == role:
-        inspector_in_patrol = {
-            p.inspector.id
-            for p in Patrol.select().where(Patrol.end.is_null()).execute()
-        }
+    inspectors = get_inspectors()
 
-    inline_keyboard: List[List[InlineKeyboardButton]] = [
-        [
+    inline_keyboard: List[List[InlineKeyboardButton]] = []
+
+    for inspector in inspectors:
+        patrol = get_patrol(inspector=inspector)        
+        inline_keyboard.append([
             InlineKeyboardButton(
                 text=" ".join(
                     [
-                        "🚨" if ur.user.id in inspector_in_patrol else "",
-                        f"@{ur.user.username}" if ur.user.username else "",
-                        f"{ur.user.full_name}",
+                        "🚨" if patrol else "",
+                        f"@{inspector.username}" if inspector.username else "",
+                        f"{inspector.full_name}",
                     ]
                 ),
-                callback_data=f"user_info_{ur.user.id}",
+                callback_data=f"user_info_{inspector.id}",
             )
-        ]
-        for ur in UserRole.select()
-        .where(UserRole.role == role)
-        .offset((page - 1) * limit)
-        .limit(limit)
-    ]
+        ])
+
     last_row = []
     if page > 1:
         last_row.append(
