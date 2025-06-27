@@ -7,8 +7,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
-from peewee import DoesNotExist
-from database.models import User, Admin, Role, UserRole, Patrol
+from database.models import User, Admin, Role, UserRole
 from filters.inspector import IsInspector
 from handlers.inspector.logic import get_patrol
 
