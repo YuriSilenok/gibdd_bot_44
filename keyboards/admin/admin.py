@@ -10,7 +10,6 @@ from aiogram.types import (
 from peewee import DoesNotExist
 from database.models import User, Admin, Role, UserRole, Patrol
 from filters.inspector import IsInspector
-from handlers.inspector.logic import get_patrol
 
 
 ADMIN_KEYBOARD: List[List[KeyboardButton]] = [
@@ -57,6 +56,22 @@ def get_inspectors() -> List[User]:
         .where(
             (UserRole.role == IsInspector.role)
         )
+    )
+
+
+def get_patrol(inspector: User) -> Patrol:
+    """Проверяет наличие роли патрульного и незавершенного патруля
+    и возвращет его"""
+
+    return (
+        Patrol.select()
+        .join(UserRole, on=UserRole.user == Patrol.inspector)
+        .where(
+            (Patrol.inspector == inspector)
+            & (Patrol.end.is_null())
+            & (UserRole.role == IsInspector.role)
+        )
+        .first()
     )
 
 
