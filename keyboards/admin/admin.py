@@ -7,8 +7,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
-from peewee import DoesNotExist
-from database.models import User, Admin, Role, UserRole, Patrol
+from database.models import User, Admin, Role, UserRole
 from filters.inspector import IsInspector
 
 
@@ -47,15 +46,14 @@ def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
         resize_keyboard=True,
     )
 
+
 def get_inspectors() -> List[User]:
     """Получить инспекторов"""
 
     return (
         User.select(User)
         .join(UserRole, on=UserRole.user == User.id)
-        .where(
-            (UserRole.role == IsInspector.role)
-        )
+        .where((UserRole.role == IsInspector.role))
     )
 
 
@@ -85,19 +83,25 @@ def get_kb_by_show_employees(
     inline_keyboard: List[List[InlineKeyboardButton]] = []
 
     for inspector in inspectors:
-        patrol = get_patrol(inspector=inspector)        
-        inline_keyboard.append([
-            InlineKeyboardButton(
-                text=" ".join(
-                    [
-                        "🚨" if patrol else "",
-                        f"@{inspector.username}" if inspector.username else "",
-                        f"{inspector.full_name}",
-                    ]
-                ),
-                callback_data=f"user_info_{inspector.id}",
-            )
-        ])
+        patrol = get_patrol(inspector=inspector)
+        inline_keyboard.append(
+            [
+                InlineKeyboardButton(
+                    text=" ".join(
+                        [
+                            "🚨" if patrol else "",
+                            (
+                                f"@{inspector.username}"
+                                if inspector.username
+                                else ""
+                            ),
+                            f"{inspector.full_name}",
+                        ]
+                    ),
+                    callback_data=f"user_info_{inspector.id}",
+                )
+            ]
+        )
 
     last_row = []
     if page > 1:
