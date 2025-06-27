@@ -1,6 +1,5 @@
 """Логика связанная с администратором"""
 
-
 from typing import List
 from database.models import Admin, Role, User, UserRole
 
@@ -23,7 +22,7 @@ def get_admins_for_notify() -> List[User]:
         .join(UserRole, on=UserRole.user == User.id)
         .join(Admin, on=Admin.user == User.id)
         .where(
-            (UserRole.role == Role.get(name="Администратор")) &
-            (Admin.is_notify)
+            (UserRole.role == Role.get(name="Администратор"))
+            & (Admin.is_notify)
         )
     )
