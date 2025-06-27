@@ -64,7 +64,7 @@ def get_kb_by_show_employees(
             InlineKeyboardButton(
                 text=" ".join(
                     [
-                        f"🚨" if ur.user.id in inspector_in_patrol else "",
+                        "🚨" if ur.user.id in inspector_in_patrol else "",
                         f"@{ur.user.username}" if ur.user.username else "",
                         f"{ur.user.full_name}",
                     ]
