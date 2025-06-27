@@ -6,9 +6,9 @@ from typing import List
 from aiogram import Bot
 from aiogram.types import Message
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
-from filters import IsAdmin, IsInspector
 from database.models import (
     MessageType,
+    Role,
     User,
     Admin,
     UserMessage,
@@ -19,9 +19,6 @@ from database.models import (
     ForwardMessage,
 )
 from keyboards.employee import user_ban_kb
-
-# Не находит id у модели, отключаем
-# pylint: disable=E1101
 
 
 def save_user_message(message: Message) -> UserMessage:
@@ -290,7 +287,7 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Patrol, on=Patrol.inspector == User.id)
-        .where((UserRole.role == IsInspector.role) & (Patrol.end.is_null()))
+        .where((UserRole.role == Role.get(name="Инспектор")) & (Patrol.end.is_null()))
     )
 
     for patrole in patroles:
@@ -303,7 +300,7 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Admin, on=Admin.user == User.id)
-        .where((Admin.is_notify) & (UserRole.role_id == IsAdmin.role.id))
+        .where((Admin.is_notify) & (UserRole.role == Role.get(name="Администратор")))
     )
 
     for admin in admins:

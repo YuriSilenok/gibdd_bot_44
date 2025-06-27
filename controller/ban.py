@@ -4,11 +4,6 @@ from datetime import datetime, timedelta
 from database.models import User, UserRole
 
 
-def is_employee(user: User) -> bool:
-    """Проверка является ли пользователь сотрудником"""
-    return UserRole.get_or_none(user=user) is not None
-
-
 def ban_user(user_banned: User) -> None:
     """Бана пользователя"""
 

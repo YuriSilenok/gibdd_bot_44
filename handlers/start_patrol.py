@@ -2,16 +2,19 @@
 
 from aiogram import Router, F
 from aiogram.types import Message
-from database.models import Patrol, User
-from filters.inspector import IsInspector
+from database.models import Patrol, User, str
+from filters.permition import IsPermition
 from keyboards.common import get_kb_by_user
-from handlers.inspector.logic import get_patrol
+from controller.patrol import get_patrol
 
 
 router = Router()
 
 
-@router.message(F.text == "Начать патрулирование", IsInspector())
+@router.message(
+        F.text == "Начать патрулирование",
+        IsPermition("Начать патрулирование"),
+)
 async def start_patrol(message: Message) -> None:
     """Обработчик кнопки начала патруля"""
 

@@ -4,13 +4,16 @@ from typing import List
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, Patrol
-from filters.admin import IsAdmin
+from filters.permition import Permition
 from keyboards.admin.user_info import get_user_info_kb
 
 router = Router()
 
 
-@router.callback_query(F.data.startswith("user_info_"), IsAdmin())
+@router.callback_query(
+    F.data.startswith("user_info_"),
+    Permition('Показать информацию о пользователе')
+)
 async def handle_user_info(callback: CallbackQuery) -> None:
     """Обработчик просмотра информации о пользователе"""
 

@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from database.models import User, UserRole, Role
 from filters.admin import IsAdmin
-from handlers.admin.user_info import handle_user_info
+from handlers.user_info import handle_user_info
 
 router = Router()
 

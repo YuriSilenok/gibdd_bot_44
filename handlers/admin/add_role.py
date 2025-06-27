@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.types.contact import Contact
 from aiogram.fsm.context import FSMContext
-from handlers.admin.logic import add_role
+from controller.notify import add_role
 from states.admin.inspector import AddInspector
 from states.admin.admin import AddAdmin
 from filters.admin import IsAdmin
