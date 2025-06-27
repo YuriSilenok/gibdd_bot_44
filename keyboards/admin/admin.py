@@ -47,13 +47,13 @@ def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
     )
 
 
-def get_inspectors() -> List[User]:
+def get_user_by_role(role: Role) -> List[User]:
     """Получить инспекторов"""
 
     return (
         User.select(User)
         .join(UserRole, on=UserRole.user == User.id)
-        .where((UserRole.role == IsInspector.role))
+        .where((UserRole.role == role))
     )
 
 
@@ -78,7 +78,7 @@ def get_kb_by_show_employees(
 ) -> InlineKeyboardMarkup:
     """Возвращает клавиатуру пользователей"""
 
-    inspectors = get_inspectors()
+    inspectors = get_user_by_role(role=role)
 
     inline_keyboard: List[List[InlineKeyboardButton]] = []
 
