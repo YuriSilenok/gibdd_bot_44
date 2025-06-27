@@ -28,5 +28,5 @@ async def notify_users(
         except TelegramForbiddenError:
             print(
                 datetime.now(),
-                f"Пользователь заблокировал бота {user.full_name}",
+                f"Пользователь заблокировал бота {user}",
             )
