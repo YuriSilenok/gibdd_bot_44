@@ -38,9 +38,31 @@ class User(Table):
     ban_until = DateTimeField(null=True)
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         """Возвращает полное имя пользователя."""
-        return f"@{self.username or ''} {self.first_name or ''} {self.last_name or ''}".strip()
+        return (
+            f"{self.first_name or ''}".strip()
+            + " "
+            + f"{self.last_name or ''}".strip()
+        )
+
+
+    @property
+    def ban_until_strf(self) -> str:
+        """Возращает дату и время бана в формете"""
+        return self.ban_until.strftime("%d-%m-%Y %H:%M")
+
+
+    def __str__(self) -> str:
+        """Строкове представление объекта"""
+        result = [str(self.tg_id)]
+
+        if self.username:
+            result.append(f"@{self.username}")
+
+        result.append(self.full_name)
+
+        return ", ".join(result)
 
 
 class Role(Table):
@@ -69,7 +91,7 @@ class MessageType(Table):
 class UserMessage(Table):
     """Класс сообщений пользователя"""
 
-    from_user = ForeignKeyField(
+    from_user: User = ForeignKeyField(
         model=User,
         on_update="CASCADE",
         on_delete="CASCADE",
@@ -89,7 +111,11 @@ class ForwardMessage(Table):
     user_message = ForeignKeyField(
         model=UserMessage, on_update="CASCADE", on_delete="CASCADE"
     )
-    to_user = ForeignKeyField(User, on_update="CASCADE", on_delete="CASCADE")
+    to_user: User = ForeignKeyField(
+        model=User,
+        on_update="CASCADE",
+        on_delete="CASCADE",
+    )
     at_created = DateTimeField(default=datetime.now())
     tg_message_id = IntegerField()
     is_delete = BooleanField(default=False)
@@ -153,12 +179,25 @@ if __name__ == "__main__":
         safe=True,
     )
     DB.close()
-    admin_role, _ = Role.get_or_create(name="Администратор")
-    Role.get_or_create(name="Инспектор")
-    admin, _ = User.get_or_create(tg_id=320720102)
+
+    chaif_role, _ = Role.get_or_create(name="Начальник")
     UserRole.get_or_create(
-        user=admin,
-        role=admin_role,
+        user=User.get_or_create(tg_id=320720102)[0], role=chaif_role
     )
+    UserRole.get_or_create(
+        user=User.get_or_create(tg_id=1184815759)[0], role=chaif_role
+    )
+
+    admin_role, _ = Role.get_or_create(name="Администратор")
+    UserRole.get_or_create(
+        user=User.get_or_create(tg_id=5222414319)[0], role=admin_role
+    )
+
+    inspector_role, _ = Role.get_or_create(name="Инспектор")
+    UserRole.get_or_create(
+        user=User.get_or_create(tg_id=7358118335)[0], role=inspector_role
+    )
+    User.get_or_create(tg_id=1433380320)
+
     for name in ["text", "photo", "video", "location", "animation"]:
         MessageType.get_or_create(name=name)

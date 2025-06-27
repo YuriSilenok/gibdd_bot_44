@@ -1,3 +1,0 @@
-python-dotenv
-aiogram==3.*
-peewee

@@ -8,4 +8,4 @@ from filters.user import IsUser
 class IsInspector(IsUser):
     """Проверяет является ли пользователь Инспектором"""
 
-    role = Role.get(name="Инспектор")
+    role: Role = Role.get(name="Инспектор")

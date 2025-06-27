@@ -2,7 +2,8 @@ name: Auto Format and Fix
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '*'
 
 permissions:
   contents: write

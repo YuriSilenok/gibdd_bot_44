@@ -8,7 +8,7 @@ from .admin.admin import get_keyboard_by_user as keyboard_admin
 from .inspector import get_keyboard_by_user as keyboard_inspector
 
 
-def get_kb_by_user(user: User):
+def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
     """Выдача клавиатуры по ролям"""
 
     keyboard = []

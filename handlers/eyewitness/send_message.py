@@ -58,7 +58,7 @@ async def get_location_from_user(message: Message) -> None:
     )
 
 
-async def answer(message: Message):
+async def answer(message: Message) -> None:
     """Стандартный ответ для очевидца"""
 
     await message.answer(
