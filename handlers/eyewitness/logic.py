@@ -194,7 +194,7 @@ def telegram_forbidden_error(func):
             if employee:
                 print(
                     datetime.now(),
-                    f"Сотрудник {employee.tg_id}:{employee} "
+                    f"Сотрудник {employee} "
                     "заблокировал телеграм бота",
                 )
             else:
