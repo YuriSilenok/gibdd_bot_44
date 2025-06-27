@@ -1,7 +1,7 @@
 [project]
 name = "gibdd_bot_44"
 version = "0.3.1"
-requires-python = "==3.8.10"
+requires-python = ">=3.8.10,<3.9"
 dependencies = [
   "python-dotenv",
   "aiogram==3.*",
