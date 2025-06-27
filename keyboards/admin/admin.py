@@ -7,7 +7,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
-from database.models import User, Admin, Role, UserRole
+from database.models import User, Admin, Role, UserRole, Patrol
 from filters.inspector import IsInspector
 
 
