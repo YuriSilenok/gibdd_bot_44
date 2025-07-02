@@ -271,7 +271,7 @@ if __name__ == "__main__":
     for role, permition in rolepermitions:
         RolePermition.get_or_create(
             role=Role.get(name=role),
-            permition=Permition(name=permition),
+            permition=Permition.get(name=permition),
         )
 
     UserRole.get_or_create(

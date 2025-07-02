@@ -16,6 +16,20 @@ class IsPermition(BaseFilter):
         )
 
 
+    def check(self, user: User) -> bool:
+        """Проверяет у пользователя привелегию"""
+
+        permition: Permition = (
+            RolePermition.select()
+            .join(UserRole, on=UserRole.role == RolePermition.role)
+            .where(
+                (UserRole.user == user) &
+                (RolePermition.permition == self.permition)
+            )
+            .first()
+        )
+        return permition is not None
+
     async def __call__(self, message: Message) -> bool:
         user: User = User.get_or_none(tg_id=message.from_user.id)
 
@@ -35,13 +49,4 @@ class IsPermition(BaseFilter):
 
             return False
 
-        permition: Permition = (
-            RolePermition.select()
-            .join(UserRole, on=UserRole.role == RolePermition.role)
-            .where(
-                (UserRole.user == user) &
-                (RolePermition.permition == self.permition)
-            )
-            .first()
-        )
-        return permition is not None
+        return self.check(user)

@@ -2,7 +2,7 @@
 
 from aiogram import Router, F
 from aiogram.types import Message
-from database.models import Patrol, User, str
+from database.models import Patrol, User
 from filters.permition import IsPermition
 from keyboards.common import get_kb_by_user
 from controller.patrol import get_patrol

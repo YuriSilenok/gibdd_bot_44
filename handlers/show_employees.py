@@ -4,7 +4,7 @@ from typing import List
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from database.models import Role
-from filters.permition import Permition
+from filters.permition import IsPermition
 from keyboards.admin.admin import get_kb_by_show_employees
 
 router = Router()
@@ -12,7 +12,7 @@ router = Router()
 
 @router.message(
     F.text == "Показать инспекторов",
-    Permition("Показать инспекторов")
+    IsPermition("Показать инспекторов")
 )
 async def show_inspectors(message: Message) -> None:
     """Отображает список инспекторов администратору."""
@@ -26,7 +26,7 @@ async def show_inspectors(message: Message) -> None:
 
 @router.callback_query(
     F.data.startswith("users_page_"),
-    Permition("Показать инспекторов")
+    IsPermition("Показать инспекторов")
 )
 async def go_to_page_handler(callback: CallbackQuery) -> None:
     """Обрабатывает переход по страницам инспекторов"""
@@ -46,7 +46,7 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
 
 @router.message(
     F.text == "Показать администраторов",
-    Permition("Показать администраторов")
+    IsPermition("Показать администраторов")
 )
 async def show_admins(message: Message):
     """Отображает список администраторов администратору."""

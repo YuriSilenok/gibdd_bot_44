@@ -2,11 +2,9 @@
 
 from aiogram import Router, F
 from aiogram.types import Message, ContentType
+from controller.message.forward import send_message_to_employees
+from controller.message.save import save_user_message
 from filters.permition import IsPermition
-from controller.forward_message import (
-    save_user_message,
-    send_message_to_employees,
-)
 from keyboards.eyewitness import KB as eyewitness_kb
 
 

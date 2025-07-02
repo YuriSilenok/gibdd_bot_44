@@ -8,7 +8,6 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 from database.models import User, Admin, Role, UserRole, Patrol
-from filters.inspector import IsInspector
 
 
 ADMIN_KEYBOARD: List[List[KeyboardButton]] = [
@@ -67,7 +66,7 @@ def get_patrol(inspector: User) -> Patrol:
         .where(
             (Patrol.inspector == inspector)
             & (Patrol.end.is_null())
-            & (UserRole.role == IsInspector.role)
+            & (UserRole.role == Role.get(name="Инспектор"))
         )
         .first()
     )
