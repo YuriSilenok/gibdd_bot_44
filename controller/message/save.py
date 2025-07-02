@@ -2,7 +2,14 @@
 
 from aiogram.types import Message
 
-from database.models import Location, MessageFile, MessageType, User, UserMessage
+from database.models import (
+    Location,
+    MessageFile,
+    MessageType,
+    User,
+    UserMessage,
+)
+
 
 def save_user_message(message: Message) -> UserMessage:
     """Сохранние сообщения в БД"""
