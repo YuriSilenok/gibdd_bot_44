@@ -7,15 +7,12 @@ from aiogram import Bot
 from aiogram.types import Message
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from database.models import (
-    MessageType,
     Role,
     User,
     Admin,
     UserMessage,
     UserRole,
     Patrol,
-    Location,
-    MessageFile,
     ForwardMessage,
 )
 from keyboards.employee import user_ban_kb
