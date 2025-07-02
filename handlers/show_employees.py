@@ -11,8 +11,7 @@ router = Router()
 
 
 @router.message(
-    F.text == "Показать инспекторов",
-    IsPermition("Показать инспекторов")
+    F.text == "Показать инспекторов", IsPermition("Показать инспекторов")
 )
 async def show_inspectors(message: Message) -> None:
     """Отображает список инспекторов администратору."""
@@ -27,8 +26,7 @@ async def show_inspectors(message: Message) -> None:
 
 
 @router.callback_query(
-    F.data.startswith("users_page_"),
-    IsPermition("Показать инспекторов")
+    F.data.startswith("users_page_"), IsPermition("Показать инспекторов")
 )
 async def go_to_page_handler(callback: CallbackQuery) -> None:
     """Обрабатывает переход по страницам инспекторов"""
@@ -48,7 +46,7 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
 
 @router.message(
     F.text == "Показать администраторов",
-    IsPermition("Показать администраторов")
+    IsPermition("Показать администраторов"),
 )
 async def show_admins(message: Message):
     """Отображает список администраторов администратору."""

@@ -12,10 +12,9 @@ def get_user_info_kb(from_user: User, by_user: User) -> InlineKeyboardMarkup:
     buttons: List = []
     for user_role in from_user.user_roles:
         role: Role = user_role.role
-        if (
-            role.name == "Администратор" 
-            and not IsPermition("Удалить роль администратора").check(by_user)
-        ):
+        if role.name == "Администратор" and not IsPermition(
+            "Удалить роль администратора"
+        ).check(by_user):
             continue
 
         if role.name == "Начальник":

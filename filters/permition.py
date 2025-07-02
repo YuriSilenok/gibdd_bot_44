@@ -14,7 +14,6 @@ class IsPermition(BaseFilter):
             Permition.get(name=permition_name) if permition_name else None
         )
 
-
     def check(self, user: User) -> bool:
         """Проверяет у пользователя привелегию"""
 
@@ -22,8 +21,8 @@ class IsPermition(BaseFilter):
             RolePermition.select()
             .join(UserRole, on=UserRole.role == RolePermition.role)
             .where(
-                (UserRole.user == user) &
-                (RolePermition.permition == self.permition)
+                (UserRole.user == user)
+                & (RolePermition.permition == self.permition)
             )
             .first()
         )

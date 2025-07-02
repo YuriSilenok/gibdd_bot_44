@@ -1,10 +1,8 @@
-
 from typing import List
 from aiogram import Bot
 
 from database.models import Patrol, User
 from keyboards.admin.user_info import get_user_info_kb
-
 
 
 async def send_message(bot: Bot, chat_id: int, from_user: User, by_user: User):
@@ -17,7 +15,6 @@ async def send_message(bot: Bot, chat_id: int, from_user: User, by_user: User):
             by_user=by_user,
         ),
     )
-
 
 
 def get_format_info(user: User) -> str:

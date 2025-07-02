@@ -11,7 +11,7 @@ router = Router()
 
 @router.callback_query(
     F.data.startswith("user_info_"),
-    IsPermition('Показать информацию о пользователе')
+    IsPermition("Показать информацию о пользователе"),
 )
 async def handle_user_info(callback: CallbackQuery) -> None:
     """Обработчик просмотра информации о пользователе"""
@@ -23,5 +23,5 @@ async def handle_user_info(callback: CallbackQuery) -> None:
         bot=callback.bot,
         chat_id=callback.from_user.id,
         from_user=user,
-        by_user=User.get(tg_id=callback.from_user.id)
+        by_user=User.get(tg_id=callback.from_user.id),
     )

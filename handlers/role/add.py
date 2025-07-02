@@ -14,8 +14,7 @@ router = Router()
 
 
 @router.message(
-        F.text == "Добавить администратора",
-        IsPermition('Добавить администратора')
+    F.text == "Добавить администратора", IsPermition("Добавить администратора")
 )
 async def add_admin_start(message: Message, state: FSMContext) -> None:
     """Обработчик начала добавления администратора"""
@@ -25,9 +24,7 @@ async def add_admin_start(message: Message, state: FSMContext) -> None:
 
 
 @router.message(
-        F.contact,
-        IsPermition('Добавить администратора'),
-        AddAdmin.get_contact
+    F.contact, IsPermition("Добавить администратора"), AddAdmin.get_contact
 )
 async def get_admin_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта администратора"""
@@ -55,8 +52,8 @@ async def get_admin_contact(message: Message, state: FSMContext):
 
 
 @router.message(
-        F.text == "Добавить инспектора",
-        IsPermition('Добавить инспектора'))
+    F.text == "Добавить инспектора", IsPermition("Добавить инспектора")
+)
 async def add_inspector_start(message: Message, state: FSMContext):
     """Обработчик начала добавления инспектора"""
 
@@ -64,7 +61,9 @@ async def add_inspector_start(message: Message, state: FSMContext):
     await state.set_state(state=AddInspector.get_contact)
 
 
-@router.message(F.contact, IsPermition('Добавить инспектора'), AddInspector.get_contact)
+@router.message(
+    F.contact, IsPermition("Добавить инспектора"), AddInspector.get_contact
+)
 async def get_inspector_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта инспектора"""
 
