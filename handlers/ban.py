@@ -24,8 +24,7 @@ router = Router()
 
 
 @router.callback_query(
-    F.data.startswith("ban_"),
-    IsPermition("Бан пользователя")
+    F.data.startswith("ban_"), IsPermition("Бан пользователя")
 )
 async def show_confirm(callback: CallbackQuery) -> None:
     """Показать подтверждение бана"""
@@ -53,8 +52,7 @@ async def show_confirm(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(
-    F.data.startswith("user_ban_confirm_"),
-    IsPermition("Бан пользователя")
+    F.data.startswith("user_ban_confirm_"), IsPermition("Бан пользователя")
 )
 async def confirm_ban(callback: CallbackQuery) -> None:
     """Подтверждение бана"""
@@ -114,8 +112,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(
-    F.data.startswith("user_ban_cancel_"),
-    IsPermition("Бан пользователя")
+    F.data.startswith("user_ban_cancel_"), IsPermition("Бан пользователя")
 )
 async def cancel_ban(callback: CallbackQuery) -> None:
     """Отмена бана"""

@@ -10,8 +10,8 @@ router = Router()
 
 
 @router.message(
-        F.text == "Получать сообщения очевидцев",
-        IsPermition("Получать сообщения очевидцев")
+    F.text == "Получать сообщения очевидцев",
+    IsPermition("Получать сообщения очевидцев"),
 )
 async def enable_notifications(message: Message):
     """Включает получения сообщей очевидцев"""
@@ -40,7 +40,7 @@ async def enable_notifications(message: Message):
 
 @router.message(
     F.text == "Не получать сообщения очевидцев",
-    IsPermition("Не получать сообщения очевидцев")
+    IsPermition("Не получать сообщения очевидцев"),
 )
 async def disable_notifications(message: Message):
     """Выключает получения сообщей очевидцев"""

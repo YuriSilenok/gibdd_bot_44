@@ -13,7 +13,7 @@ def get_patrol(inspector: User) -> Patrol:
         .where(
             (Patrol.inspector == inspector)
             & (Patrol.end.is_null())
-            & (UserRole.role == Role.get(name='Инспектор'))
+            & (UserRole.role == Role.get(name="Инспектор"))
         )
         .first()
     )

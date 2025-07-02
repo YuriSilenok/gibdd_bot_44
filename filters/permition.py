@@ -5,14 +5,13 @@ from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import RolePermition, User, UserRole, Permition
 
+
 class IsPermition(BaseFilter):
     """Проверяет наличие привелегии у пользователя"""
 
-
     def __init__(self, permition_name: str = None):
         self.permition = (
-            Permition.get(name=permition_name) 
-            if permition_name else None
+            Permition.get(name=permition_name) if permition_name else None
         )
 
 

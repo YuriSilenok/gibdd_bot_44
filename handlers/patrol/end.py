@@ -13,8 +13,8 @@ router = Router()
 
 
 @router.message(
-        F.text == "Закончить патрулирование",
-        IsPermition("Закончить патрулирование"),
+    F.text == "Закончить патрулирование",
+    IsPermition("Закончить патрулирование"),
 )
 async def end_patrol(message: Message):
     """Обработчик кнопки завершения патруля"""
