@@ -6,8 +6,17 @@ from database.models import Role, User, UserRole
 def is_employee(user: User) -> bool:
     """Проверка является ли пользователь сотрудником"""
 
-    return UserRole.select().where(UserRole.role.in_([
-        Role.get(name="Начальник"),
-        Role.get(name="Администратор"),
-        Role.get(name="Инспектор"),
-    ])).first() is not None
+    return (
+        UserRole.select()
+        .where(
+            UserRole.role.in_(
+                [
+                    Role.get(name="Начальник"),
+                    Role.get(name="Администратор"),
+                    Role.get(name="Инспектор"),
+                ]
+            )
+        )
+        .first()
+        is not None
+    )
