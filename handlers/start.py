@@ -3,7 +3,7 @@
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import CommandStart
-from database.models import User
+from database.models import Role, User, UserRole
 from keyboards.common import get_kb_by_user
 
 
@@ -15,7 +15,7 @@ async def start_cmd(message: Message):
     """Обработчик команды start"""
     user: User = User.get_or_none(tg_id=message.from_user.id)
     if user is None:
-        User.create(
+        user = User.create(
             tg_id=message.from_user.id,
             username=message.from_user.username,
             last_name=message.from_user.last_name,
@@ -31,6 +31,11 @@ async def start_cmd(message: Message):
         user.last_name = message.from_user.last_name
         user.first_name = message.from_user.first_name
         user.save()
+
+    UserRole.get_or_create(
+        user=user,
+        role=Role.get(name="Очевидец"),
+    )
 
     await message.answer(
         text="❗️Уважаемые участники дорожного движения!\n"

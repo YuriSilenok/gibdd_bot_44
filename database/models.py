@@ -209,6 +209,7 @@ if __name__ == "__main__":
         "Не получать сообщения очевидцев",
         "Бан пользователя",
         "Показать информацию о пользователе",
+        "Отправить сообщение",
     ]
 
     for permition in permitions:
@@ -218,6 +219,7 @@ if __name__ == "__main__":
         "Начальник",
         "Администратор",
         "Инспектор",
+        "Очевидец",
     ]
 
     for role in roles:
@@ -249,12 +251,21 @@ if __name__ == "__main__":
         ("Инспектор", "Начать патрулирование"),
         ("Инспектор", "Закончить патрулирование"),
         ("Инспектор", "Бан пользователя"),
+        # Очевидец
+        ("Очевидец", "Отправить сообщение"),
     ]
 
     for role, permition in rolepermitions:
         RolePermition.get_or_create(
             role=Role.get(name=role),
             permition=Permition.get(name=permition),
+        )
+
+    role: Role = Role.get(name="Очевидец")
+    for user in User.select():
+        UserRole.get_or_create(
+            role=role,
+            user=user,
         )
 
     UserRole.get_or_create(
