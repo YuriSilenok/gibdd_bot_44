@@ -21,9 +21,9 @@ def add_routers(dp: Dispatcher):
     dp.include_routers(
         ban.router,
         notify.router,
-        send_message.router,
         show_employees.router,
-        start.router,
         user_info.router,
+        start.router,
+        send_message.router,
         other.router,
     )

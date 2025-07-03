@@ -274,7 +274,12 @@ async def send_message_to_employees(
         .join(Admin, on=Admin.user == User.id)
         .where(
             (Admin.is_notify)
-            & (UserRole.role == Role.get(name="Администратор"))
+            & (
+                UserRole.role.in_([
+                    Role.get(name="Администратор"),
+                    Role.get(name="Начальник"),
+                ])
+            )
         )
     )
 
