@@ -14,10 +14,12 @@ def get_kb_by_user(user: User) -> ReplyKeyboardMarkup:
     user_role_admin = UserRole.get_or_none(
         (UserRole.user == user)
         & (
-            UserRole.role.in_([
-                Role.get(name="Администратор"),
-                Role.get(name="Начальник"),
-            ])
+            UserRole.role.in_(
+                [
+                    Role.get(name="Администратор"),
+                    Role.get(name="Начальник"),
+                ]
+            )
         )
     )
 
