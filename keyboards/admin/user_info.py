@@ -17,7 +17,7 @@ def get_user_info_kb(from_user: User, by_user: User) -> InlineKeyboardMarkup:
         ).check(by_user):
             continue
 
-        if role.name == "Начальник":
+        if role.name in ("Начальник", "Очевидец"):
             continue
 
         buttons.append(
