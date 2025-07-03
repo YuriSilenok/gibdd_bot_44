@@ -11,7 +11,7 @@ from keyboards.eyewitness import KB as eyewitness_kb
 router = Router()
 
 
-@router.message(F.text, ~F.text.startswith("/"), IsPermition())
+@router.message(F.text, ~F.text.startswith("/"), IsPermition("Отправить сообщение"))
 async def get_message_from_user(message: Message) -> None:
     """Обработчик сообщения от пользователя"""
     await answer(message=message)
@@ -20,7 +20,7 @@ async def get_message_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.ANIMATION, IsPermition())
+@router.message(F.content_type == ContentType.ANIMATION, IsPermition("Отправить сообщение"))
 async def get_animation_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
@@ -29,7 +29,7 @@ async def get_animation_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.VIDEO, IsPermition())
+@router.message(F.content_type == ContentType.VIDEO, IsPermition("Отправить сообщение"))
 async def get_video_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
@@ -38,7 +38,7 @@ async def get_video_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.PHOTO, IsPermition())
+@router.message(F.content_type == ContentType.PHOTO, IsPermition("Отправить сообщение"))
 async def get_photo_from_user(message: Message) -> None:
     """Обработчик фотографий от пользователя"""
     await answer(message=message)
@@ -47,7 +47,7 @@ async def get_photo_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.LOCATION, IsPermition())
+@router.message(F.content_type == ContentType.LOCATION, IsPermition("Отправить сообщение"))
 async def get_location_from_user(message: Message) -> None:
     """Обработчик локации от пользователя"""
     await answer(message=message)

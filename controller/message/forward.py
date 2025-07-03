@@ -149,17 +149,22 @@ def telegram_forbidden_error(func):
     async def wrapper(*args, **qwargs):
         try:
             return await func(*args, **qwargs)
-        except TelegramForbiddenError:
+        except (TelegramForbiddenError, TelegramBadRequest) as ex:
             employee = qwargs.get("employee", None)
             if employee:
                 print(
                     datetime.now(),
                     f"Сотрудник {employee} заблокировал телеграм бота",
+                    ex,
                 )
+                user_roles: List[UserRole] = employee.user_roles
+                for user_role in user_roles:
+                    user_role.delete_instance()
             else:
                 print(
                     datetime.now(),
                     "Сотрудник заблокировал телеграм бота",
+                    ex,
                 )
 
     return wrapper
@@ -201,8 +206,9 @@ async def send_message_to_employee(
     except TelegramBadRequest:
         # Может возникнуть когда сотрудник удалил сообщение,
         # на которое нужно ответить
-        prev_forward_message.is_delete = True
-        prev_forward_message.save()
+        if prev_forward_message:
+            prev_forward_message.is_delete = True
+            prev_forward_message.save()
 
         prev_forward_message = (
             await send_message_to_employee(
@@ -210,7 +216,7 @@ async def send_message_to_employee(
                 user_message=prev_message,
                 employee=employee,
             )
-            if restore_message_chain
+            if restore_message_chain and prev_message
             else None
         )
 
