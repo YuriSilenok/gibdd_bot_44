@@ -3,13 +3,16 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from database.models import User, Admin
-from filters.admin import IsAdmin
+from filters.permition import IsPermition
 from keyboards.common import get_kb_by_user
 
 router = Router()
 
 
-@router.message(F.text == "Получать сообщения очевидцев", IsAdmin())
+@router.message(
+    F.text == "Получать сообщения очевидцев",
+    IsPermition("Получать сообщения очевидцев"),
+)
 async def enable_notifications(message: Message):
     """Включает получения сообщей очевидцев"""
 
@@ -35,7 +38,10 @@ async def enable_notifications(message: Message):
     )
 
 
-@router.message(F.text == "Не получать сообщения очевидцев", IsAdmin())
+@router.message(
+    F.text == "Не получать сообщения очевидцев",
+    IsPermition("Не получать сообщения очевидцев"),
+)
 async def disable_notifications(message: Message):
     """Выключает получения сообщей очевидцев"""
 

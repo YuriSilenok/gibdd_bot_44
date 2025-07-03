@@ -6,56 +6,16 @@ from typing import List
 from aiogram import Bot
 from aiogram.types import Message
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
-from filters import IsAdmin, IsInspector
 from database.models import (
-    MessageType,
+    Role,
     User,
     Admin,
     UserMessage,
     UserRole,
     Patrol,
-    Location,
-    MessageFile,
     ForwardMessage,
 )
 from keyboards.employee import user_ban_kb
-
-# Не находит id у модели, отключаем
-# pylint: disable=E1101
-
-
-def save_user_message(message: Message) -> UserMessage:
-    """Сохранние сообщения в БД"""
-
-    msg: UserMessage = UserMessage.create(
-        from_user=User.get(tg_id=message.from_user.id),
-        text=(
-            message.text
-            if message.text
-            else message.caption if message.photo or message.video else None
-        ),
-        type=MessageType.get(name=message.content_type),
-    )
-
-    if message.photo:
-        MessageFile.get_or_create(
-            message=msg, file_id=message.photo[-1].file_id
-        )
-    if message.video:
-        MessageFile.get_or_create(message=msg, file_id=message.video.file_id)
-    if message.animation:
-        MessageFile.get_or_create(
-            message=msg, file_id=message.animation.file_id
-        )
-
-    if message.location:
-        Location.get_or_create(
-            message=msg,
-            longitude=message.location.longitude,
-            latitude=message.location.latitude,
-        )
-
-    return msg
 
 
 def get_prev_message(user_message: UserMessage) -> UserMessage:
@@ -189,17 +149,22 @@ def telegram_forbidden_error(func):
     async def wrapper(*args, **qwargs):
         try:
             return await func(*args, **qwargs)
-        except TelegramForbiddenError:
+        except (TelegramForbiddenError, TelegramBadRequest) as ex:
             employee = qwargs.get("employee", None)
             if employee:
                 print(
                     datetime.now(),
                     f"Сотрудник {employee} заблокировал телеграм бота",
+                    ex,
                 )
+                user_roles: List[UserRole] = employee.user_roles
+                for user_role in user_roles:
+                    user_role.delete_instance()
             else:
                 print(
                     datetime.now(),
                     "Сотрудник заблокировал телеграм бота",
+                    ex,
                 )
 
     return wrapper
@@ -241,8 +206,9 @@ async def send_message_to_employee(
     except TelegramBadRequest:
         # Может возникнуть когда сотрудник удалил сообщение,
         # на которое нужно ответить
-        prev_forward_message.is_delete = True
-        prev_forward_message.save()
+        if prev_forward_message:
+            prev_forward_message.is_delete = True
+            prev_forward_message.save()
 
         prev_forward_message = (
             await send_message_to_employee(
@@ -250,7 +216,7 @@ async def send_message_to_employee(
                 user_message=prev_message,
                 employee=employee,
             )
-            if restore_message_chain
+            if restore_message_chain and prev_message
             else None
         )
 
@@ -290,7 +256,10 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Patrol, on=Patrol.inspector == User.id)
-        .where((UserRole.role == IsInspector.role) & (Patrol.end.is_null()))
+        .where(
+            (UserRole.role == Role.get(name="Инспектор"))
+            & (Patrol.end.is_null())
+        )
     )
 
     for patrole in patroles:
@@ -303,7 +272,17 @@ async def send_message_to_employees(
         User.select()
         .join(UserRole, on=UserRole.user == User.id)
         .join(Admin, on=Admin.user == User.id)
-        .where((Admin.is_notify) & (UserRole.role_id == IsAdmin.role.id))
+        .where(
+            (Admin.is_notify)
+            & (
+                UserRole.role.in_(
+                    [
+                        Role.get(name="Администратор"),
+                        Role.get(name="Начальник"),
+                    ]
+                )
+            )
+        )
     )
 
     for admin in admins:

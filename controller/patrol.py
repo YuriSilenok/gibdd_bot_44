@@ -1,7 +1,6 @@
 """Проверка, находится ли инспектор в патруле"""
 
-from database.models import User, Patrol, UserRole
-from filters.inspector import IsInspector
+from database.models import Role, User, Patrol, UserRole
 
 
 def get_patrol(inspector: User) -> Patrol:
@@ -14,7 +13,7 @@ def get_patrol(inspector: User) -> Patrol:
         .where(
             (Patrol.inspector == inspector)
             & (Patrol.end.is_null())
-            & (UserRole.role == IsInspector.role)
+            & (UserRole.role == Role.get(name="Инспектор"))
         )
         .first()
     )

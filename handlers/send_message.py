@@ -2,18 +2,18 @@
 
 from aiogram import Router, F
 from aiogram.types import Message, ContentType
-from filters.user import IsUser
-from handlers.eyewitness.logic import (
-    save_user_message,
-    send_message_to_employees,
-)
+from controller.message.forward import send_message_to_employees
+from controller.message.save import save_user_message
+from filters.permition import IsPermition
 from keyboards.eyewitness import KB as eyewitness_kb
 
 
 router = Router()
 
 
-@router.message(F.text, ~F.text.startswith("/"), IsUser())
+@router.message(
+    F.text, ~F.text.startswith("/"), IsPermition("Отправить сообщение")
+)
 async def get_message_from_user(message: Message) -> None:
     """Обработчик сообщения от пользователя"""
     await answer(message=message)
@@ -22,7 +22,9 @@ async def get_message_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.ANIMATION, IsUser())
+@router.message(
+    F.content_type == ContentType.ANIMATION, IsPermition("Отправить сообщение")
+)
 async def get_animation_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
@@ -31,7 +33,9 @@ async def get_animation_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.VIDEO, IsUser())
+@router.message(
+    F.content_type == ContentType.VIDEO, IsPermition("Отправить сообщение")
+)
 async def get_video_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
     await answer(message=message)
@@ -40,7 +44,9 @@ async def get_video_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.PHOTO, IsUser())
+@router.message(
+    F.content_type == ContentType.PHOTO, IsPermition("Отправить сообщение")
+)
 async def get_photo_from_user(message: Message) -> None:
     """Обработчик фотографий от пользователя"""
     await answer(message=message)
@@ -49,7 +55,9 @@ async def get_photo_from_user(message: Message) -> None:
     )
 
 
-@router.message(F.content_type == ContentType.LOCATION, IsUser())
+@router.message(
+    F.content_type == ContentType.LOCATION, IsPermition("Отправить сообщение")
+)
 async def get_location_from_user(message: Message) -> None:
     """Обработчик локации от пользователя"""
     await answer(message=message)

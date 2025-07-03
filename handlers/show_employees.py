@@ -4,25 +4,30 @@ from typing import List
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from database.models import Role
-from filters.admin import IsAdmin
-from filters.inspector import IsInspector
+from filters.permition import IsPermition
 from keyboards.admin.admin import get_kb_by_show_employees
 
 router = Router()
 
 
-@router.message(F.text == "Показать инспекторов", IsAdmin())
+@router.message(
+    F.text == "Показать инспекторов", IsPermition("Показать инспекторов")
+)
 async def show_inspectors(message: Message) -> None:
     """Отображает список инспекторов администратору."""
 
     await message.answer(
         text="<b>Список инспекторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(role=IsInspector.role, page=1),
+        reply_markup=get_kb_by_show_employees(
+            role=Role.get(name="Инспектор"), page=1
+        ),
     )
 
 
-@router.callback_query(F.data.startswith("users_page_"), IsAdmin())
+@router.callback_query(
+    F.data.startswith("users_page_"), IsPermition("Показать инспекторов")
+)
 async def go_to_page_handler(callback: CallbackQuery) -> None:
     """Обрабатывает переход по страницам инспекторов"""
 
@@ -39,12 +44,17 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
     )
 
 
-@router.message(F.text == "Показать администраторов", IsAdmin())
+@router.message(
+    F.text == "Показать администраторов",
+    IsPermition("Показать администраторов"),
+)
 async def show_admins(message: Message):
     """Отображает список администраторов администратору."""
 
     await message.answer(
         text="<b>Список администраторов:</b>",
         parse_mode="HTML",
-        reply_markup=get_kb_by_show_employees(role=IsAdmin.role, page=1),
+        reply_markup=get_kb_by_show_employees(
+            role=Role.get(name="Администратор"), page=1
+        ),
     )

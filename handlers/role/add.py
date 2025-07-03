@@ -4,17 +4,18 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.types.contact import Contact
 from aiogram.fsm.context import FSMContext
-from handlers.admin.logic import add_role
+from controller.role import add_role
+from filters.permition import IsPermition
 from states.admin.inspector import AddInspector
 from states.admin.admin import AddAdmin
-from filters.admin import IsAdmin
-from filters.inspector import IsInspector
-from database.models import Admin
+from database.models import Admin, Role
 
 router = Router()
 
 
-@router.message(F.text == "Добавить администратора", IsAdmin())
+@router.message(
+    F.text == "Добавить администратора", IsPermition("Добавить администратора")
+)
 async def add_admin_start(message: Message, state: FSMContext) -> None:
     """Обработчик начала добавления администратора"""
 
@@ -22,14 +23,16 @@ async def add_admin_start(message: Message, state: FSMContext) -> None:
     await state.set_state(state=AddAdmin.get_contact)
 
 
-@router.message(F.contact, IsAdmin(), AddAdmin.get_contact)
+@router.message(
+    F.contact, IsPermition("Добавить администратора"), AddAdmin.get_contact
+)
 async def get_admin_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта администратора"""
 
     contact: Contact = message.contact
     _, user_role_is_added, user = add_role(
         contact=contact,
-        role=IsAdmin.role,
+        role=Role.get(name="Администратор"),
     )
 
     if user is None:
@@ -48,7 +51,9 @@ async def get_admin_contact(message: Message, state: FSMContext):
     await state.clear()
 
 
-@router.message(F.text == "Добавить инспектора", IsAdmin())
+@router.message(
+    F.text == "Добавить инспектора", IsPermition("Добавить инспектора")
+)
 async def add_inspector_start(message: Message, state: FSMContext):
     """Обработчик начала добавления инспектора"""
 
@@ -56,14 +61,16 @@ async def add_inspector_start(message: Message, state: FSMContext):
     await state.set_state(state=AddInspector.get_contact)
 
 
-@router.message(F.contact, IsAdmin(), AddInspector.get_contact)
+@router.message(
+    F.contact, IsPermition("Добавить инспектора"), AddInspector.get_contact
+)
 async def get_inspector_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта инспектора"""
 
     contact: Contact = message.contact
     _, user_role_is_added, user = add_role(
         contact=contact,
-        role=IsInspector.role,
+        role=Role.get(name="Инспектор"),
     )
 
     if user is None:

@@ -1,30 +1,23 @@
-"""Обработчик информации о пользователе"""
-
 from typing import List
-from aiogram import Router, F
-from aiogram.types import CallbackQuery
-from database.models import User, Patrol
-from filters.admin import IsAdmin
+from aiogram import Bot
+
+from database.models import Patrol, User
 from keyboards.admin.user_info import get_user_info_kb
 
-router = Router()
 
-
-@router.callback_query(F.data.startswith("user_info_"), IsAdmin())
-async def handle_user_info(callback: CallbackQuery) -> None:
-    """Обработчик просмотра информации о пользователе"""
-
-    user_id = int(callback.data.split(sep="_")[-1])
-    user: User = User.get_by_id(pk=user_id)
-
-    await callback.message.edit_text(
-        text=format_user_info(user=user),
+async def send_message(bot: Bot, chat_id: int, from_user: User, by_user: User):
+    await bot.send_message(
+        chat_id=chat_id,
+        text=get_format_info(user=from_user),
         parse_mode="HTML",
-        reply_markup=get_user_info_kb(user=user),
+        reply_markup=get_user_info_kb(
+            from_user=from_user,
+            by_user=by_user,
+        ),
     )
 
 
-def format_user_info(user: User) -> str:
+def get_format_info(user: User) -> str:
     """Форматирует информацию о пользователе"""
 
     roles: List = [ur.role.name for ur in user.user_roles]

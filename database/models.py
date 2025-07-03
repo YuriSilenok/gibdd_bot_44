@@ -80,6 +80,20 @@ class UserRole(Table):
     )
 
 
+class Permition(Table):
+    """Приведегия выданная"""
+
+    name = CharField()
+
+
+class RolePermition(Table):
+
+    permition = ForeignKeyField(
+        Permition, on_update="CASCADE", on_delete="CASCADE"
+    )
+    role = ForeignKeyField(Role, on_update="CASCADE", on_delete="CASCADE")
+
+
 class MessageType(Table):
     """Тип сообщения"""
 
@@ -168,6 +182,8 @@ if __name__ == "__main__":
             User,
             Role,
             UserRole,
+            Permition,
+            RolePermition,
             MessageType,
             UserMessage,
             ForwardMessage,
@@ -180,24 +196,84 @@ if __name__ == "__main__":
     )
     DB.close()
 
-    chaif_role, _ = Role.get_or_create(name="Начальник")
+    permitions = [
+        "Начать патрулирование",
+        "Закончить патрулирование",
+        "Показать администраторов",
+        "Добавить администратора",
+        "Удалить роль администратора",
+        "Показать инспекторов",
+        "Добавить инспектора",
+        "Удалить роль инспектора",
+        "Получать сообщения очевидцев",
+        "Не получать сообщения очевидцев",
+        "Бан пользователя",
+        "Показать информацию о пользователе",
+        "Отправить сообщение",
+    ]
+
+    for permition in permitions:
+        Permition.get_or_create(name=permition)
+
+    roles = [
+        "Начальник",
+        "Администратор",
+        "Инспектор",
+        "Очевидец",
+    ]
+
+    for role in roles:
+        Role.get_or_create(name=role)
+
+    rolepermitions = [
+        # Привелегии начальника
+        ("Начальник", "Показать администраторов"),
+        ("Начальник", "Добавить администратора"),
+        ("Начальник", "Удалить роль администратора"),
+        ("Начальник", "Показать инспекторов"),
+        ("Начальник", "Добавить инспектора"),
+        ("Начальник", "Удалить роль инспектора"),
+        ("Начальник", "Показать информацию о пользователе"),
+        ("Начальник", "Получать сообщения очевидцев"),
+        ("Начальник", "Не получать сообщения очевидцев"),
+        ("Начальник", "Бан пользователя"),
+        # Привелегии администратора
+        ("Администратор", "Показать администраторов"),
+        ("Администратор", "Добавить администратора"),
+        ("Администратор", "Показать инспекторов"),
+        ("Администратор", "Добавить инспектора"),
+        ("Администратор", "Удалить роль инспектора"),
+        ("Администратор", "Показать информацию о пользователе"),
+        ("Администратор", "Получать сообщения очевидцев"),
+        ("Администратор", "Не получать сообщения очевидцев"),
+        ("Администратор", "Бан пользователя"),
+        # Привелегии инспектора
+        ("Инспектор", "Начать патрулирование"),
+        ("Инспектор", "Закончить патрулирование"),
+        ("Инспектор", "Бан пользователя"),
+        # Очевидец
+        ("Очевидец", "Отправить сообщение"),
+    ]
+
+    for role, permition in rolepermitions:
+        RolePermition.get_or_create(
+            role=Role.get(name=role),
+            permition=Permition.get(name=permition),
+        )
+
+    role: Role = Role.get(name="Очевидец")
+    for user in User.select():
+        UserRole.get_or_create(
+            role=role,
+            user=user,
+        )
+
     UserRole.get_or_create(
-        user=User.get_or_create(tg_id=320720102)[0], role=chaif_role
-    )
-    UserRole.get_or_create(
-        user=User.get_or_create(tg_id=1184815759)[0], role=chaif_role
+        user=User.get_or_create(tg_id=320720102)[0],
+        role=Role.get(name="Начальник"),
     )
 
-    admin_role, _ = Role.get_or_create(name="Администратор")
-    UserRole.get_or_create(
-        user=User.get_or_create(tg_id=5222414319)[0], role=admin_role
-    )
+    messagetypes = ["text", "photo", "video", "location", "animation"]
 
-    inspector_role, _ = Role.get_or_create(name="Инспектор")
-    UserRole.get_or_create(
-        user=User.get_or_create(tg_id=7358118335)[0], role=inspector_role
-    )
-    User.get_or_create(tg_id=1433380320)
-
-    for name in ["text", "photo", "video", "location", "animation"]:
-        MessageType.get_or_create(name=name)
+    for messagetype in messagetypes:
+        MessageType.get_or_create(name=messagetype)

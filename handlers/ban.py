@@ -3,49 +3,29 @@
 from datetime import datetime
 from typing import List
 
-from aiogram import exceptions, Router, F
+from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
-from database.models import UserMessage, ForwardMessage, User
+from controller.employee import is_employee
+from controller.message.delete import delete_messages
+from database.models import UserMessage, User
 
-from filters import IsEmployee
+from filters.permition import IsPermition
 
-from handlers.admin.logic import get_admins
-from handlers.employee.logic import ban_user, is_employee
-from handlers.eyewitness.logic import send_message_to_employee
-from handlers.user.logic import notify_users
+from controller.admin import get_admins
+from controller.ban import ban_user
+from controller.message.forward import send_message_to_employee
+from controller.message.sending import sending_messages
 
 from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
 
 router = Router()
 
 
-async def delete_messages(callback: CallbackQuery, user: User) -> None:
-    """Удаление сообщений пользователя"""
-
-    messages: List[ForwardMessage] = list(
-        ForwardMessage.select()
-        .join(UserMessage)
-        .where((UserMessage.from_user == user) & (~ForwardMessage.is_delete))
-    )
-    for message in messages:
-        try:
-            await callback.bot.delete_message(
-                chat_id=message.to_user.tg_id,
-                message_id=message.tg_message_id,
-            )
-        except exceptions.TelegramBadRequest:
-            await callback.answer(
-                text=f"Не удалось удалить сообщения {message.tg_message_id}"
-                f" пользователя {message.to_user.tg_id}"
-            )
-
-    ForwardMessage.update(is_delete=True).where(
-        (UserMessage.from_user == user) & (~ForwardMessage.is_delete)
-    )
-
-
-@router.callback_query(F.data.startswith("ban_"), IsEmployee())
+@router.callback_query(
+    F.data.startswith("ban_"), IsPermition("Бан пользователя")
+)
 async def show_confirm(callback: CallbackQuery) -> None:
     """Показать подтверждение бана"""
 
@@ -65,13 +45,15 @@ async def show_confirm(callback: CallbackQuery) -> None:
                 )
             )
 
-    except exceptions.TelegramBadRequest as e:
+    except TelegramBadRequest as e:
         await callback.answer(
             text=f"Ошибка при Показать подтверждение бана: {e}"
         )
 
 
-@router.callback_query(F.data.startswith("user_ban_confirm_"), IsEmployee())
+@router.callback_query(
+    F.data.startswith("user_ban_confirm_"), IsPermition("Бан пользователя")
+)
 async def confirm_ban(callback: CallbackQuery) -> None:
     """Подтверждение бана"""
 
@@ -112,7 +94,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
                     restore_message_chain=False,
                 )
 
-            await notify_users(
+            await sending_messages(
                 bot=callback.bot,
                 users=admins,
                 text=(
@@ -125,11 +107,13 @@ async def confirm_ban(callback: CallbackQuery) -> None:
             await callback.answer(text="Пользователь заблокирован")
             await callback.message.delete()
 
-    except exceptions.TelegramBadRequest as e:
+    except TelegramBadRequest as e:
         await callback.answer(text=f"Ошибка: {e}")
 
 
-@router.callback_query(F.data.startswith("user_ban_cancel_"), IsEmployee())
+@router.callback_query(
+    F.data.startswith("user_ban_cancel_"), IsPermition("Бан пользователя")
+)
 async def cancel_ban(callback: CallbackQuery) -> None:
     """Отмена бана"""
 
