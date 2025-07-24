@@ -81,7 +81,7 @@ def get_kb_by_show_employees(
 
     inline_keyboard: List[List[InlineKeyboardButton]] = []
 
-    for employee in employees[limit * (page - 1):limit * (page)]:
+    for employee in employees[limit * (page - 1) : limit * (page)]:
         patrol = get_patrol(inspector=employee)
         inline_keyboard.append(
             [
