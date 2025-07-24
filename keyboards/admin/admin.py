@@ -73,16 +73,16 @@ def get_patrol(inspector: User) -> Patrol:
 
 
 def get_kb_by_show_employees(
-    role: Role, page: int, limit: int = 10
+    role: Role, page: int = 1, limit: int = 10
 ) -> InlineKeyboardMarkup:
     """Возвращает клавиатуру пользователей"""
 
-    inspectors = get_user_by_role(role=role)
+    employees = get_user_by_role(role=role)
 
     inline_keyboard: List[List[InlineKeyboardButton]] = []
 
-    for inspector in inspectors:
-        patrol = get_patrol(inspector=inspector)
+    for employee in employees[limit * (page - 1):limit * (page)]:
+        patrol = get_patrol(inspector=employee)
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
@@ -90,14 +90,14 @@ def get_kb_by_show_employees(
                         [
                             "🚨" if patrol else "",
                             (
-                                f"@{inspector.username}"
-                                if inspector.username
+                                f"@{employee.username}"
+                                if employee.username
                                 else ""
                             ),
-                            f"{inspector.full_name}",
+                            f"{employee.full_name}",
                         ]
                     ),
-                    callback_data=f"user_info_{inspector.id}",
+                    callback_data=f"user_info_{employee.id}",
                 )
             ]
         )
@@ -118,7 +118,7 @@ def get_kb_by_show_employees(
         )
     )
 
-    if len(inline_keyboard) == limit:
+    if employees.count() > page * limit:
         last_row.append(
             InlineKeyboardButton(
                 text="Вперед",

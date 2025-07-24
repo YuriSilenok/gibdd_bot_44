@@ -20,7 +20,7 @@ async def show_inspectors(message: Message) -> None:
         text="<b>Список инспекторов:</b>",
         parse_mode="HTML",
         reply_markup=get_kb_by_show_employees(
-            role=Role.get(name="Инспектор"), page=1
+            role=Role.get(name="Инспектор")
         ),
     )
 
@@ -55,6 +55,6 @@ async def show_admins(message: Message):
         text="<b>Список администраторов:</b>",
         parse_mode="HTML",
         reply_markup=get_kb_by_show_employees(
-            role=Role.get(name="Администратор"), page=1
+            role=Role.get(name="Администратор")
         ),
     )
