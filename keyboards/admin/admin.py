@@ -8,7 +8,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 from controller.patrol import get_patrol
-from database.models import User, Admin, Role, UserRole, Patrol
+from database.models import User, Admin, Role, UserRole
 
 
 ADMIN_KEYBOARD: List[List[KeyboardButton]] = [
