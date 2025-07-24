@@ -1,3 +1,5 @@
+"""Лолгика при предоставлении информации о пользователе"""
+
 from typing import List
 from aiogram import Bot
 
@@ -6,6 +8,7 @@ from keyboards.admin.user_info import get_user_info_kb
 
 
 async def send_message(bot: Bot, chat_id: int, from_user: User, by_user: User):
+    """Отправка сообщения от очевидца сотруднику"""
     await bot.send_message(
         chat_id=chat_id,
         text=get_format_info(user=from_user),

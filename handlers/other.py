@@ -1,3 +1,5 @@
+"""Обработчик незарегистрированных действий"""
+
 from aiogram import Router
 from aiogram.types import CallbackQuery
 

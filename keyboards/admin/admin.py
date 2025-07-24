@@ -7,6 +7,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
+from controller.patrol import get_patrol
 from database.models import User, Admin, Role, UserRole, Patrol
 
 
@@ -53,22 +54,6 @@ def get_user_by_role(role: Role) -> List[User]:
         User.select(User)
         .join(UserRole, on=UserRole.user == User.id)
         .where((UserRole.role == role))
-    )
-
-
-def get_patrol(inspector: User) -> Patrol:
-    """Проверяет наличие роли патрульного и незавершенного патруля
-    и возвращет его"""
-
-    return (
-        Patrol.select()
-        .join(UserRole, on=UserRole.user == Patrol.inspector)
-        .where(
-            (Patrol.inspector == inspector)
-            & (Patrol.end.is_null())
-            & (UserRole.role == Role.get(name="Инспектор"))
-        )
-        .first()
     )
 
 

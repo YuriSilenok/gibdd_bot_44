@@ -87,11 +87,14 @@ class Permition(Table):
 
 
 class RolePermition(Table):
+    """Выданные привилегии для роли"""
 
     permition = ForeignKeyField(
-        Permition, on_update="CASCADE", on_delete="CASCADE"
+        model=Permition, on_update="CASCADE", on_delete="CASCADE"
     )
-    role = ForeignKeyField(Role, on_update="CASCADE", on_delete="CASCADE")
+    role = ForeignKeyField(
+        model=Role, on_update="CASCADE", on_delete="CASCADE"
+    )
 
 
 class MessageType(Table):
