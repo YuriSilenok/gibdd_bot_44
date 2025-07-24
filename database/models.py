@@ -29,7 +29,7 @@ class User(Table):
     """Класс пользователя"""
 
     tg_id = IntegerField(unique=True)
-    at_created = DateTimeField(default=datetime.now())
+    at_created = DateTimeField(default=datetime.now)
     username = CharField(null=True)
     last_name = CharField(null=True)
     first_name = CharField(null=True)
@@ -87,11 +87,14 @@ class Permition(Table):
 
 
 class RolePermition(Table):
+    """Выданные привилегии для роли"""
 
     permition = ForeignKeyField(
-        Permition, on_update="CASCADE", on_delete="CASCADE"
+        model=Permition, on_update="CASCADE", on_delete="CASCADE"
     )
-    role = ForeignKeyField(Role, on_update="CASCADE", on_delete="CASCADE")
+    role = ForeignKeyField(
+        model=Role, on_update="CASCADE", on_delete="CASCADE"
+    )
 
 
 class MessageType(Table):
@@ -114,7 +117,7 @@ class UserMessage(Table):
         on_delete="CASCADE",
     )
     text = CharField(max_length=4096, null=True)
-    at_created = DateTimeField(default=datetime.now())
+    at_created = DateTimeField(default=datetime.now)
 
 
 class ForwardMessage(Table):
@@ -128,7 +131,7 @@ class ForwardMessage(Table):
         on_update="CASCADE",
         on_delete="CASCADE",
     )
-    at_created = DateTimeField(default=datetime.now())
+    at_created = DateTimeField(default=datetime.now)
     tg_message_id = IntegerField()
     is_delete = BooleanField(default=False)
 
@@ -164,7 +167,7 @@ class Patrol(Table):
     inspector = ForeignKeyField(
         User, backref="patrol", on_update="CASCADE", on_delete="CASCADE"
     )
-    start = DateTimeField(default=datetime.now())
+    start = DateTimeField(default=datetime.now)
     end = DateTimeField(null=True)
 
 
