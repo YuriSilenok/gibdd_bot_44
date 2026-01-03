@@ -29,7 +29,6 @@ class IsPermition(BaseFilter):
         )
         return permition is not None
 
-
     async def __call__(self, message: Message) -> bool:
         user: User = User.get_or_none(tg_id=message.from_user.id)
 
