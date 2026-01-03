@@ -21,9 +21,12 @@ async def main():
             'family': socket.AF_INET
         }
     )
-
-    bot = Bot(token=TOKEN, session=session)
-
+    
+    bot = Bot(
+        token=TOKEN,
+        session=session
+    )
+    
     dp = Dispatcher()
     try:
         add_routers(dp)
