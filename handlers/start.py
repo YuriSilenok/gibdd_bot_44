@@ -11,7 +11,6 @@ from utils import telegram_network_error
 router = Router()
 
 
-@telegram_network_error
 @router.message(CommandStart())
 async def start_cmd(message: Message):
     """Обработчик команды start"""
@@ -38,6 +37,11 @@ async def start_cmd(message: Message):
         user=user,
         role=Role.get(name="Очевидец"),
     )
+
+    await send_mess_by_start(message, user)
+
+@telegram_network_error
+async def send_mess_by_start(message: Message, user: User):
 
     await message.answer(
         text="❗️Уважаемые участники дорожного движения!\n"
