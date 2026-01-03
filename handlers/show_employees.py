@@ -26,6 +26,7 @@ async def show_inspectors(message: Message) -> None:
 @telegram_network_error
 async def send_show_inspectors(message: Message):
     await message_answer(
+        message=message,
         text="<b>Список инспекторов:</b>",
         parse_mode="HTML",
         reply_markup=get_kb_by_show_employees(role=Role.get(name="Инспектор")),
