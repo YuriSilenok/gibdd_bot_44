@@ -20,7 +20,7 @@ async def main():
         # Ключевые параметры для решения ServerDisconnectedError
         timeout=30.0,  # Общий таймаут на операцию (уменьшите если ошибки частые)
     )
-    
+
     # Дополнительные настройки коннектора
     session._connector_init = {
         "family": socket.AF_INET,
@@ -34,12 +34,12 @@ async def main():
     # Создаем бота с настройками по умолчанию
     bot_settings = DefaultBotProperties(
         # Устанавливаем таймауты для запросов к Telegram API
-        read_timeout=20.0,    # Таймаут чтения данных
-        write_timeout=20.0,   # Таймаут отправки данных
-        connect_timeout=10.0, # Таймаут установки соединения
-        pool_timeout=1.0,     # ВАЖНО: не ждать свободного соединения
+        read_timeout=20.0,  # Таймаут чтения данных
+        write_timeout=20.0,  # Таймаут отправки данных
+        connect_timeout=10.0,  # Таймаут установки соединения
+        pool_timeout=1.0,  # ВАЖНО: не ждать свободного соединения
     )
-    
+
     bot = Bot(
         token=TOKEN,
         session=session,
@@ -47,7 +47,7 @@ async def main():
     )
 
     dp = Dispatcher()
-    
+
     try:
         add_routers(dp)
         # Обертываем polling в цикл для автоматического перезапуска
