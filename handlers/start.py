@@ -13,7 +13,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start_cmd(message: Message):
-    """Обработчик команды start"""
+    print("""Обработчик команды start""")
     user: User = User.get_or_none(tg_id=message.from_user.id)
     if user is None:
         user = User.create(
