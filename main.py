@@ -15,12 +15,16 @@ TOKEN = os.getenv("TOKEN")
 
 async def main():
     """Запуск бота"""
-    # Способ 1: Самый простой - через connector_kwargs
-    session = AiohttpSession(
-        connector_kwargs={
-            'family': socket.AF_INET
-        }
+    # Создаем aiohttp коннектор с AF_INET
+    connector = aiohttp.TCPConnector(
+        family=socket.AF_INET
     )
+    
+    # Создаем aiohttp ClientSession
+    http_session = aiohttp.ClientSession(connector=connector)
+    
+    # Создаем сессию для aiogram, передавая созданную http сессию
+    session = AiohttpSession(session=http_session)
     
     bot = Bot(
         token=TOKEN,
@@ -32,7 +36,9 @@ async def main():
         add_routers(dp)
         await dp.start_polling(bot, skip_updates=True)
     finally:
-        await bot.session.close()
+        # Важно закрыть обе сессии
+        await session.close()
+        await http_session.close()
 
 
 if __name__ == "__main__":
