@@ -151,7 +151,7 @@ def telegram_network_error(func):
             try:
                 return await func(*args, **qwargs)
             except TelegramNetworkError as ex:
-                logger.warning(str(ex))
+                print(str(ex))
                 await asyncio.sleep(delay=delay)
     return wrapper
 
