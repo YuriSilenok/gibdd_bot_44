@@ -14,11 +14,7 @@ TOKEN = os.getenv("TOKEN")
 
 BOT = Bot(
     token=TOKEN,
-    session=AiohttpSession(
-        connector=TCPConnector(
-            family=socket.AF_INET
-        )
-    )
+    session=AiohttpSession(connector=TCPConnector(family=socket.AF_INET)),
 )
 DP = Dispatcher()
 
