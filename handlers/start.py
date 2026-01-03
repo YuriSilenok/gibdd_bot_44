@@ -40,6 +40,7 @@ async def start_cmd(message: Message):
 
     await send_mess_by_start(message, user)
 
+
 @telegram_network_error
 async def send_mess_by_start(message: Message, user: User):
 
