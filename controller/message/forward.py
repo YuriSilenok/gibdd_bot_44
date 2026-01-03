@@ -5,10 +5,7 @@ from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
 from aiogram.types import Message
-from aiogram.exceptions import (
-    TelegramBadRequest,
-    TelegramForbiddenError
-)
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from database.models import (
     Role,
     User,

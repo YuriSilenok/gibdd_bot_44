@@ -66,6 +66,7 @@ async def get_location_from_user(message: Message) -> None:
         bot=message.bot, user_message=save_user_message(message=message)
     )
 
+
 @telegram_network_error
 async def answer(message: Message) -> None:
     """Стандартный ответ для очевидца"""

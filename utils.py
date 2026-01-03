@@ -1,6 +1,7 @@
 import asyncio
 from aiogram.exceptions import TelegramNetworkError
 
+
 def telegram_network_error(func):
     """Декоратор для сбоев сети интернет"""
 
