@@ -34,7 +34,7 @@ async def main():
     dp = Dispatcher()
     try:
         add_routers(dp)
-        await dp.start_polling(bot, skip_updates=True)
+        await dp.start_polling(bot)
     finally:
         await bot.session.close()
 
