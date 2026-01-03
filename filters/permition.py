@@ -4,7 +4,7 @@ from datetime import datetime
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import RolePermition, User, UserRole, Permition
-from utils import message_answer, telegram_network_error
+from utils import message_answer
 
 
 class IsPermition(BaseFilter):
