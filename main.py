@@ -16,17 +16,10 @@ TOKEN = os.getenv("TOKEN")
 async def main():
     """Запуск бота"""
     # Способ 1: Используйте connector_kwargs (должен работать в 3.13.1)
-    session = AiohttpSession(
-        connector_kwargs={
-            'family': socket.AF_INET
-        }
-    )
-    
-    bot = Bot(
-        token=TOKEN,
-        session=session
-    )
-    
+    session = AiohttpSession(connector_kwargs={"family": socket.AF_INET})
+
+    bot = Bot(token=TOKEN, session=session)
+
     dp = Dispatcher()
     try:
         add_routers(dp)
