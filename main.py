@@ -29,7 +29,6 @@ async def main():
     bot = Bot(
         token=TOKEN,
         session=session,
-        timeout=3,
     )
 
     dp = Dispatcher()
