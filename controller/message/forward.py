@@ -22,6 +22,21 @@ from database.models import (
 from keyboards.employee import user_ban_kb
 
 
+def telegram_network_error(func):
+    """Декоратор для сбоев сети интернет"""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **qwargs):
+        for delay in range(1, 10):
+            try:
+                return await func(*args, **qwargs)
+            except TelegramNetworkError as ex:
+                print(str(ex))
+                await asyncio.sleep(delay=delay)
+
+    return wrapper
+
+
 def get_prev_message(user_message: UserMessage) -> UserMessage:
     """Получить предыдущее сообщение очевидца"""
 
@@ -39,6 +54,7 @@ def get_prev_message(user_message: UserMessage) -> UserMessage:
     )
 
 
+@telegram_network_error
 async def forward_text_message(
     bot: Bot,
     user_message: UserMessage,
@@ -57,6 +73,7 @@ async def forward_text_message(
     )
 
 
+@telegram_network_error
 async def forward_photo_message(
     bot: Bot,
     user_message: UserMessage,
@@ -77,6 +94,7 @@ async def forward_photo_message(
         )
 
 
+@telegram_network_error
 async def forward_video_message(
     bot: Bot,
     user_message: UserMessage,
@@ -97,6 +115,7 @@ async def forward_video_message(
         )
 
 
+@telegram_network_error
 async def forward_location_message(
     bot: Bot,
     user_message: UserMessage,
@@ -117,6 +136,7 @@ async def forward_location_message(
         )
 
 
+@telegram_network_error
 async def forward_animation_message(
     bot: Bot,
     user_message: UserMessage,
@@ -144,21 +164,6 @@ MESSAGE_TYPE = {
     "location": forward_location_message,
     "animation": forward_animation_message,
 }
-
-
-def telegram_network_error(func):
-    """Декоратор для сбоев сети интернет"""
-
-    @functools.wraps(func)
-    async def wrapper(*args, **qwargs):
-        for delay in range(1, 10):
-            try:
-                return await func(*args, **qwargs)
-            except TelegramNetworkError as ex:
-                print(str(ex))
-                await asyncio.sleep(delay=delay)
-
-    return wrapper
 
 
 def telegram_forbidden_error(func):
@@ -189,7 +194,6 @@ def telegram_forbidden_error(func):
     return wrapper
 
 
-@telegram_network_error
 @telegram_forbidden_error
 async def send_message_to_employee(
     bot: Bot,
