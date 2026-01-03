@@ -7,8 +7,7 @@ from aiogram import Bot
 from aiogram.types import Message
 from aiogram.exceptions import (
     TelegramBadRequest,
-    TelegramForbiddenError,
-    TelegramNetworkError,
+    TelegramForbiddenError
 )
 from database.models import (
     Role,
@@ -20,21 +19,7 @@ from database.models import (
     ForwardMessage,
 )
 from keyboards.employee import user_ban_kb
-
-
-def telegram_network_error(func):
-    """Декоратор для сбоев сети интернет"""
-
-    @functools.wraps(func)
-    async def wrapper(*args, **qwargs):
-        for delay in range(1, 10):
-            try:
-                return await func(*args, **qwargs)
-            except TelegramNetworkError as ex:
-                print(str(ex))
-                await asyncio.sleep(delay=delay)
-
-    return wrapper
+from utils import telegram_network_error
 
 
 def get_prev_message(user_message: UserMessage) -> UserMessage:

@@ -6,6 +6,7 @@ from controller.message.forward import send_message_to_employees
 from controller.message.save import save_user_message
 from filters.permition import IsPermition
 from keyboards.eyewitness import KB as eyewitness_kb
+from utils import telegram_network_error
 
 
 router = Router()
@@ -65,7 +66,7 @@ async def get_location_from_user(message: Message) -> None:
         bot=message.bot, user_message=save_user_message(message=message)
     )
 
-
+@telegram_network_error
 async def answer(message: Message) -> None:
     """Стандартный ответ для очевидца"""
 
