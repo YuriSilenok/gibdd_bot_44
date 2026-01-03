@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
 from aiogram.types import Message
-from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramNetworkError
 from database.models import (
     Role,
     User,
@@ -142,6 +142,20 @@ MESSAGE_TYPE = {
 }
 
 
+def telegram_network_error(func):
+    """Декоратор для сбоев сети интернет"""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **qwargs):
+        for delay in range(1, 10):
+            try:
+                return await func(*args, **qwargs)
+            except TelegramNetworkError as ex:
+                logger.warning(str(ex))
+                await asyncio.sleep(delay=delay)
+    return wrapper
+
+
 def telegram_forbidden_error(func):
     """Декоратор для обработки заблокированного бота"""
 
@@ -169,7 +183,7 @@ def telegram_forbidden_error(func):
 
     return wrapper
 
-
+@telegram_network_error
 @telegram_forbidden_error
 async def send_message_to_employee(
     bot: Bot,
