@@ -40,7 +40,7 @@ async def main():
     )
 
     dp = Dispatcher()
-    
+
     try:
         add_routers(dp)
         # Обертываем polling в цикл для автоматического перезапуска
