@@ -3,7 +3,6 @@
 import os
 import socket
 import asyncio
-import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
