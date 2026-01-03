@@ -5,7 +5,11 @@ from datetime import datetime, timedelta
 from typing import List
 from aiogram import Bot
 from aiogram.types import Message
-from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramNetworkError
+from aiogram.exceptions import (
+    TelegramBadRequest,
+    TelegramForbiddenError,
+    TelegramNetworkError,
+)
 from database.models import (
     Role,
     User,
@@ -153,6 +157,7 @@ def telegram_network_error(func):
             except TelegramNetworkError as ex:
                 logger.warning(str(ex))
                 await asyncio.sleep(delay=delay)
+
     return wrapper
 
 
@@ -182,6 +187,7 @@ def telegram_forbidden_error(func):
                 )
 
     return wrapper
+
 
 @telegram_network_error
 @telegram_forbidden_error
