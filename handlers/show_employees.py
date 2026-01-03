@@ -65,6 +65,7 @@ async def show_admins(message: Message):
     """Отображает список администраторов администратору."""
 
     await message_answer(
+        message=message,
         text="<b>Список администраторов:</b>",
         parse_mode="HTML",
         reply_markup=get_kb_by_show_employees(
