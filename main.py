@@ -18,7 +18,7 @@ async def main():
     session = AiohttpSession(
         timeout=30.0,  # Общий таймаут
     )
-    
+
     # Настройки коннектора
     session._connector_init = {
         "family": socket.AF_INET,
@@ -33,10 +33,10 @@ async def main():
         token=TOKEN,
         session=session,
         # Таймауты передаются напрямую в Bot
-        read_timeout=20.0,    # Таймаут чтения данных
-        write_timeout=20.0,   # Таймаут отправки данных
-        connect_timeout=10.0, # Таймаут установки соединения
-        pool_timeout=1.0,     # ВАЖНО: не ждать свободного соединения
+        read_timeout=20.0,  # Таймаут чтения данных
+        write_timeout=20.0,  # Таймаут отправки данных
+        connect_timeout=10.0,  # Таймаут установки соединения
+        pool_timeout=1.0,  # ВАЖНО: не ждать свободного соединения
     )
 
     dp = Dispatcher()
@@ -47,7 +47,9 @@ async def main():
         while True:
             try:
                 print("Запуск polling...")
-                await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+                await dp.start_polling(
+                    bot, allowed_updates=dp.resolve_used_update_types()
+                )
             except Exception as e:
                 print(f"Ошибка polling: {e}. Перезапуск через 10 секунд...")
                 await asyncio.sleep(10)
