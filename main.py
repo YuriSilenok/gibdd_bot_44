@@ -4,6 +4,7 @@ import os
 import socket
 import asyncio
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
 from handlers import add_routers
@@ -25,7 +26,13 @@ async def main():
         "ttl_dns_cache": 300,
     }
 
-    bot = Bot(token=TOKEN, session=session)
+    bot = Bot(
+        token=TOKEN,
+        session=session,
+        default=DefaultBotProperties(
+            request_timeout=3
+        )
+    )
 
     dp = Dispatcher()
     try:
