@@ -4,7 +4,6 @@ import os
 import socket
 import asyncio
 from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
 from handlers import add_routers
