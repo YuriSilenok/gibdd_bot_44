@@ -6,6 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from database.models import Role
 from filters.permition import IsPermition
 from keyboards.admin.admin import get_kb_by_show_employees
+from utils import telegram_network_error
 
 router = Router()
 
@@ -15,7 +16,11 @@ router = Router()
 )
 async def show_inspectors(message: Message) -> None:
     """Отображает список инспекторов администратору."""
+    await send_show_inspectors(message)
 
+
+@telegram_network_error
+async def send_show_inspectors(message: Message):
     await message.answer(
         text="<b>Список инспекторов:</b>",
         parse_mode="HTML",
