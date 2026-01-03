@@ -4,7 +4,7 @@ from datetime import datetime
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import RolePermition, User, UserRole, Permition
-from utils import message_answer, telegram_network_error
+from utils import message_answer
 
 
 class IsPermition(BaseFilter):
@@ -28,7 +28,6 @@ class IsPermition(BaseFilter):
             .first()
         )
         return permition is not None
-
 
     async def __call__(self, message: Message) -> bool:
         user: User = User.get_or_none(tg_id=message.from_user.id)
