@@ -5,11 +5,13 @@ from aiogram.types import Message
 from aiogram.filters import CommandStart
 from database.models import Role, User, UserRole
 from keyboards.common import get_kb_by_user
+from utils import telegram_network_error
 
 
 router = Router()
 
 
+@telegram_network_error
 @router.message(CommandStart())
 async def start_cmd(message: Message):
     """Обработчик команды start"""
