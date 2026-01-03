@@ -12,25 +12,23 @@ from handlers import add_routers
 load_dotenv(".env")
 TOKEN = os.getenv("TOKEN")
 
-BOT = Bot(
-    token=TOKEN,
-    session=AiohttpSession(
-        connector=TCPConnector(
-            family=socket.AF_INET
-        )
-    )
-)
-DP = Dispatcher()
-
 
 async def main():
     """Запуск бота"""
-
+    bot = Bot(
+        token=TOKEN,
+        session=AiohttpSession(
+            connector=TCPConnector(
+                family=socket.AF_INET
+            )
+        )
+    )
+    dp = Dispatcher()
     try:
-        add_routers(DP)
-        await DP.start_polling(BOT, skip_updatet=True)
+        add_routers(dp)
+        await dp.start_polling(bot, skip_updatet=True)
     finally:
-        await BOT.session.close()
+        await bot.session.close()
 
 
 if __name__ == "__main__":
