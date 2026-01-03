@@ -23,13 +23,15 @@ async def start_patrol(message: Message) -> None:
     patrol: Patrol = get_patrol(inspector=inspector)
 
     if patrol:
-        await message_answer(message=message,
+        await message_answer(
+            message=message,
             text="Вы уже в патруле",
             reply_markup=get_kb_by_user(user=inspector),
         )
     else:
         Patrol.create(inspector=inspector)
-        await message_answer(message=message,
+        await message_answer(
+            message=message,
             text="Патрулирование начато, "
             "теперь Вы будете получать сообщения от граждан",
             reply_markup=get_kb_by_user(user=inspector),

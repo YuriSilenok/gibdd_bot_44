@@ -25,13 +25,15 @@ async def end_patrol(message: Message):
     if patrol:
         patrol.end = datetime.now()
         patrol.save()
-        await message_answer(message=message,
+        await message_answer(
+            message=message,
             text="Патрулировнаие закончено, "
             "теперь Вы не будете получать сообщения от граждан",
             reply_markup=get_kb_by_user(user=inspector),
         )
     else:
-        await message_answer(message=message,
+        await message_answer(
+            message=message,
             text="Вы уже не в патруле",
             reply_markup=get_kb_by_user(user=inspector),
         )

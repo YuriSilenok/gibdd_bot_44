@@ -6,7 +6,11 @@ from aiogram.types import Message, CallbackQuery
 from database.models import Role
 from filters.permition import IsPermition
 from keyboards.admin.admin import get_kb_by_show_employees
-from utils import message_answer, message_edit_reply_markup, telegram_network_error
+from utils import (
+    message_answer,
+    message_edit_reply_markup,
+    telegram_network_error,
+)
 
 router = Router()
 
@@ -40,10 +44,12 @@ async def go_to_page_handler(callback: CallbackQuery) -> None:
     role: Role = Role.get_by_id(pk=role_id)
     await send_go_to_page_handler(callback, role, page)
 
+
 @telegram_network_error
 async def send_go_to_page_handler(callback: CallbackQuery, role, page):
 
-    await message_edit_reply_markup(message=callback.message,
+    await message_edit_reply_markup(
+        message=callback.message,
         reply_markup=get_kb_by_show_employees(
             role=role,
             page=page,

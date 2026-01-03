@@ -20,7 +20,12 @@ from controller.message.sending import sending_messages
 
 from handlers import send_message
 from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
-from utils import callback_answer, message_edit_reply_markup, message_delete, bot_send_message
+from utils import (
+    callback_answer,
+    message_edit_reply_markup,
+    message_delete,
+    bot_send_message,
+)
 
 router = Router()
 
@@ -37,21 +42,27 @@ async def show_confirm(callback: CallbackQuery) -> None:
         user: User = user_message.from_user
 
         if is_employee(user=user):
-            await callback_answer(callback=callback, text="Нельзя заблокировать сотрудника")
-            await message_edit_reply_markup(message=callback.message, reply_markup=None)
+            await callback_answer(
+                callback=callback, text="Нельзя заблокировать сотрудника"
+            )
+            await message_edit_reply_markup(
+                message=callback.message, reply_markup=None
+            )
 
         else:
             await message_edit_reply_markup(
                 message=callback.message,
                 reply_markup=user_ban_cobfirm_and_cancel_kb(
                     user_message=user_message
-                )
+                ),
             )
 
     except TelegramBadRequest as e:
-        await callback_answer(callback=callback,
-            text=f"Ошибка при Показать подтверждение бана: {e}"
+        await callback_answer(
+            callback=callback,
+            text=f"Ошибка при Показать подтверждение бана: {e}",
         )
+
 
 @router.callback_query(
     F.data.startswith("user_ban_confirm_"), IsPermition("Бан пользователя")
@@ -66,11 +77,17 @@ async def confirm_ban(callback: CallbackQuery) -> None:
         user_banned: User = user_message.from_user
 
         if is_employee(user=user_banned):
-            await callback_answer(callback=callback, text="Нельзя заблокировать сотрудника")
-            await message_edit_reply_markup(message=callback.message, reply_markup=None)
+            await callback_answer(
+                callback=callback, text="Нельзя заблокировать сотрудника"
+            )
+            await message_edit_reply_markup(
+                message=callback.message, reply_markup=None
+            )
 
         elif user_banned.is_ban and user_banned.ban_until > datetime.now():
-            await callback_answer(callback=callback, text="Пользователь уже заблокирован")
+            await callback_answer(
+                callback=callback, text="Пользователь уже заблокирован"
+            )
             await message_delete(message=callback.message)
 
         else:
@@ -107,7 +124,9 @@ async def confirm_ban(callback: CallbackQuery) -> None:
                 ),
             )
 
-            await callback_answer(callback=callback, text="Пользователь заблокирован")
+            await callback_answer(
+                callback=callback, text="Пользователь заблокирован"
+            )
             await message_delete(message=callback.message)
 
     except TelegramBadRequest as e:
@@ -121,8 +140,9 @@ async def cancel_ban(callback: CallbackQuery) -> None:
     """Отмена бана"""
 
     user_message_id = int(callback.data.split(sep="_")[-1])
-    await message_edit_reply_markup(message=callback.message,
+    await message_edit_reply_markup(
+        message=callback.message,
         reply_markup=user_ban_kb(
             user_message=UserMessage.get_by_id(pk=user_message_id)
-        )
+        ),
     )

@@ -21,7 +21,9 @@ def telegram_network_error(func):
 
 
 @telegram_network_error
-async def message_answer(message: Message, text, reply_markup=None, parse_mode=None):
+async def message_answer(
+    message: Message, text, reply_markup=None, parse_mode=None
+):
     await message.answer(
         text=text,
         reply_markup=reply_markup,
@@ -40,7 +42,7 @@ async def message_edit_reply_markup(message: Message, reply_markup=None):
 
 
 @telegram_network_error
-async def message_delete(message:Message):
+async def message_delete(message: Message):
     await message.delete()
 
 

@@ -37,18 +37,22 @@ async def get_admin_contact(message: Message, state: FSMContext):
     )
 
     if user is None:
-        await message_answer(message=message,
-            text="Пользователь с таким контактом не запускал бота"
+        await message_answer(
+            message=message,
+            text="Пользователь с таким контактом не запускал бота",
         )
         return
 
     if not user_role_is_added:
-        await message_answer(message=message,
-            text="Этому сотруднику уже выдавалась роль администратора"
+        await message_answer(
+            message=message,
+            text="Этому сотруднику уже выдавалась роль администратора",
         )
     else:
         Admin.get_or_create(user=user)
-        await message_answer(message=message,text="Роль администратора добавлена")
+        await message_answer(
+            message=message, text="Роль администратора добавлена"
+        )
     await state.clear()
 
 
@@ -58,7 +62,7 @@ async def get_admin_contact(message: Message, state: FSMContext):
 async def add_inspector_start(message: Message, state: FSMContext):
     """Обработчик начала добавления инспектора"""
 
-    await message_answer(message=message,text="Отправьте контакт сотрудника")
+    await message_answer(message=message, text="Отправьте контакт сотрудника")
     await state.set_state(state=AddInspector.get_contact)
 
 
@@ -75,16 +79,18 @@ async def get_inspector_contact(message: Message, state: FSMContext):
     )
 
     if user is None:
-        await message_answer(message=message,
-            text="Пользователь с таким контактом не запускал бота"
+        await message_answer(
+            message=message,
+            text="Пользователь с таким контактом не запускал бота",
         )
         return
 
     if not user_role_is_added:
-        await message_answer(message=message,
-            text="Этому сотруднику уже выдавалась роль инспектора"
+        await message_answer(
+            message=message,
+            text="Этому сотруднику уже выдавалась роль инспектора",
         )
     else:
-        await message_answer(message=message,text="Роль инспектора добавлена")
+        await message_answer(message=message, text="Роль инспектора добавлена")
 
     await state.clear()

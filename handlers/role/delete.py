@@ -29,8 +29,9 @@ async def handle_role_deletion(callback: CallbackQuery):
     user_role: UserRole = UserRole.get_or_none(id=user_role_id)
 
     if user_role:
-        await message_answer(message=callback.message,
-            text=f"Роль {user_role.role.name} удалена"
+        await message_answer(
+            message=callback.message,
+            text=f"Роль {user_role.role.name} удалена",
         )
         user_role.delete_instance()
         await send_message(
@@ -40,5 +41,9 @@ async def handle_role_deletion(callback: CallbackQuery):
             by_user=User.get(tg_id=callback.from_user.id),
         )
     else:
-        await message_answer(message=callback.message, text="Роль уже была удалена ранее")
-        await message_edit_reply_markup(message=callback.message, reply_markup=None)
+        await message_answer(
+            message=callback.message, text="Роль уже была удалена ранее"
+        )
+        await message_edit_reply_markup(
+            message=callback.message, reply_markup=None
+        )

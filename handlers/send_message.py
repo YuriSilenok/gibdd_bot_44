@@ -10,7 +10,8 @@ from utils import message_answer, telegram_network_error
 
 
 router = Router()
-text = ("Спасибо за обращение. "
+text = (
+    "Спасибо за обращение. "
     "Мы его уже передали инспекторам. "
     "Вы можете отправить фотографии или видео с места происшествия. "
     "Если хотите отправить геолокацию, нажмите кнопку ниже: "
@@ -24,7 +25,8 @@ text = ("Спасибо за обращение. "
 async def get_message_from_user(message: Message) -> None:
     """Обработчик сообщения от пользователя"""
 
-    await message_answer(message=message,
+    await message_answer(
+        message=message,
         text=text,
         reply_markup=eyewitness_kb,
         parse_mode="HTML",
@@ -40,7 +42,8 @@ async def get_message_from_user(message: Message) -> None:
 async def get_animation_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
 
-    await message_answer(message=message,
+    await message_answer(
+        message=message,
         text=text,
         reply_markup=eyewitness_kb,
         parse_mode="HTML",
@@ -56,7 +59,8 @@ async def get_animation_from_user(message: Message) -> None:
 async def get_video_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
 
-    await message_answer(message=message,
+    await message_answer(
+        message=message,
         text=text,
         reply_markup=eyewitness_kb,
         parse_mode="HTML",
@@ -72,7 +76,8 @@ async def get_video_from_user(message: Message) -> None:
 async def get_photo_from_user(message: Message) -> None:
     """Обработчик фотографий от пользователя"""
 
-    await message_answer(message=message,
+    await message_answer(
+        message=message,
         text=text,
         reply_markup=eyewitness_kb,
         parse_mode="HTML",
@@ -88,7 +93,8 @@ async def get_photo_from_user(message: Message) -> None:
 async def get_location_from_user(message: Message) -> None:
     """Обработчик локации от пользователя"""
 
-    await message_answer(message=message,
+    await message_answer(
+        message=message,
         text=text,
         reply_markup=eyewitness_kb,
         parse_mode="HTML",
@@ -96,4 +102,3 @@ async def get_location_from_user(message: Message) -> None:
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
-

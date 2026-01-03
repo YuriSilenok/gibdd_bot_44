@@ -40,11 +40,12 @@ class IsPermition(BaseFilter):
 
             ban_until: str = user.ban_until.strftime("%d-%m-%Y %H:%M")
 
-            await message_answer(message=message,
+            await message_answer(
+                message=message,
                 text=(
                     f"Вы не можете отправлять сообщения до срока окончания"
                     f" бана, напишите снова после {ban_until}"
-                )
+                ),
             )
 
             return False
