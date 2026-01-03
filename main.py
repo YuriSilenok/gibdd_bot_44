@@ -3,6 +3,7 @@
 import os
 import socket
 import asyncio
+import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
@@ -15,16 +16,21 @@ TOKEN = os.getenv("TOKEN")
 async def main():
     """Запуск бота"""
     # Создаем aiohttp коннектор с AF_INET
-    connector = aiohttp.TCPConnector(family=socket.AF_INET)
-
+    connector = aiohttp.TCPConnector(
+        family=socket.AF_INET
+    )
+    
     # Создаем aiohttp ClientSession
     http_session = aiohttp.ClientSession(connector=connector)
-
+    
     # Создаем сессию для aiogram, передавая созданную http сессию
     session = AiohttpSession(session=http_session)
-
-    bot = Bot(token=TOKEN, session=session)
-
+    
+    bot = Bot(
+        token=TOKEN,
+        session=session
+    )
+    
     dp = Dispatcher()
     try:
         add_routers(dp)
