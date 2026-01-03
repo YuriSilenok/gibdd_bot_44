@@ -6,10 +6,16 @@ from controller.message.forward import send_message_to_employees
 from controller.message.save import save_user_message
 from filters.permition import IsPermition
 from keyboards.eyewitness import KB as eyewitness_kb
-from utils import telegram_network_error
+from utils import message_answer, telegram_network_error
 
 
 router = Router()
+text = ("Спасибо за обращение. "
+    "Мы его уже передали инспекторам. "
+    "Вы можете отправить фотографии или видео с места происшествия. "
+    "Если хотите отправить геолокацию, нажмите кнопку ниже: "
+    "<b>Отправить геолокацию</b>"
+)
 
 
 @router.message(
@@ -17,7 +23,12 @@ router = Router()
 )
 async def get_message_from_user(message: Message) -> None:
     """Обработчик сообщения от пользователя"""
-    await answer(message=message)
+
+    await message_answer(message=message,
+        text=text,
+        reply_markup=eyewitness_kb,
+        parse_mode="HTML",
+    )
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
@@ -28,7 +39,12 @@ async def get_message_from_user(message: Message) -> None:
 )
 async def get_animation_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
-    await answer(message=message)
+
+    await message_answer(message=message,
+        text=text,
+        reply_markup=eyewitness_kb,
+        parse_mode="HTML",
+    )
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
@@ -39,7 +55,12 @@ async def get_animation_from_user(message: Message) -> None:
 )
 async def get_video_from_user(message: Message) -> None:
     """Обработчик видео от пользователя"""
-    await answer(message=message)
+
+    await message_answer(message=message,
+        text=text,
+        reply_markup=eyewitness_kb,
+        parse_mode="HTML",
+    )
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
@@ -50,7 +71,12 @@ async def get_video_from_user(message: Message) -> None:
 )
 async def get_photo_from_user(message: Message) -> None:
     """Обработчик фотографий от пользователя"""
-    await answer(message=message)
+
+    await message_answer(message=message,
+        text=text,
+        reply_markup=eyewitness_kb,
+        parse_mode="HTML",
+    )
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
@@ -61,22 +87,13 @@ async def get_photo_from_user(message: Message) -> None:
 )
 async def get_location_from_user(message: Message) -> None:
     """Обработчик локации от пользователя"""
-    await answer(message=message)
+
+    await message_answer(message=message,
+        text=text,
+        reply_markup=eyewitness_kb,
+        parse_mode="HTML",
+    )
     await send_message_to_employees(
         bot=message.bot, user_message=save_user_message(message=message)
     )
 
-
-@telegram_network_error
-async def answer(message: Message) -> None:
-    """Стандартный ответ для очевидца"""
-
-    await message.answer(
-        text="Спасибо за обращение. "
-        "Мы его уже передали инспекторам. "
-        "Вы можете отправить фотографии или видео с места происшествия. "
-        "Если хотите отправить геолокацию, нажмите кнопку ниже: "
-        "<b>Отправить геолокацию</b>",
-        reply_markup=eyewitness_kb,
-        parse_mode="HTML",
-    )

@@ -9,6 +9,7 @@ from filters.permition import IsPermition
 from states.admin.inspector import AddInspector
 from states.admin.admin import AddAdmin
 from database.models import Admin, Role
+from utils import message_answer
 
 router = Router()
 
@@ -19,7 +20,7 @@ router = Router()
 async def add_admin_start(message: Message, state: FSMContext) -> None:
     """Обработчик начала добавления администратора"""
 
-    await message.answer(text="Отправьте контакт сотрудника")
+    await message_answer(message=message, text="Отправьте контакт сотрудника")
     await state.set_state(state=AddAdmin.get_contact)
 
 
@@ -36,18 +37,18 @@ async def get_admin_contact(message: Message, state: FSMContext):
     )
 
     if user is None:
-        await message.answer(
+        await message_answer(message=message,
             text="Пользователь с таким контактом не запускал бота"
         )
         return
 
     if not user_role_is_added:
-        await message.answer(
+        await message_answer(message=message,
             text="Этому сотруднику уже выдавалась роль администратора"
         )
     else:
         Admin.get_or_create(user=user)
-        await message.answer(text="Роль администратора добавлена")
+        await message_answer(message=message,text="Роль администратора добавлена")
     await state.clear()
 
 
@@ -57,7 +58,7 @@ async def get_admin_contact(message: Message, state: FSMContext):
 async def add_inspector_start(message: Message, state: FSMContext):
     """Обработчик начала добавления инспектора"""
 
-    await message.answer(text="Отправьте контакт сотрудника")
+    await message_answer(message=message,text="Отправьте контакт сотрудника")
     await state.set_state(state=AddInspector.get_contact)
 
 
@@ -74,16 +75,16 @@ async def get_inspector_contact(message: Message, state: FSMContext):
     )
 
     if user is None:
-        await message.answer(
+        await message_answer(message=message,
             text="Пользователь с таким контактом не запускал бота"
         )
         return
 
     if not user_role_is_added:
-        await message.answer(
+        await message_answer(message=message,
             text="Этому сотруднику уже выдавалась роль инспектора"
         )
     else:
-        await message.answer(text="Роль инспектора добавлена")
+        await message_answer(message=message,text="Роль инспектора добавлена")
 
     await state.clear()

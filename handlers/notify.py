@@ -5,6 +5,7 @@ from aiogram.types import Message
 from database.models import User, Admin
 from filters.permition import IsPermition
 from keyboards.common import get_kb_by_user
+from utils import message_answer
 
 router = Router()
 
@@ -23,7 +24,7 @@ async def enable_notifications(message: Message):
         admin = Admin.create(user=user)
 
     if admin.is_notify:
-        await message.answer(
+        await message_answer(message=message,
             text="Ранее Вы уже включили получение сообщений от очевидцев",
             reply_markup=get_kb_by_user(user=user),
         )
@@ -32,7 +33,7 @@ async def enable_notifications(message: Message):
     admin.is_notify = True
     admin.save()
 
-    await message.answer(
+    await message_answer(message=message,
         text="Теперь Вы будете получать сообщения от очевидцев",
         reply_markup=get_kb_by_user(user=user),
     )
@@ -52,7 +53,7 @@ async def disable_notifications(message: Message):
         admin = Admin.create(user=user)
 
     if not admin.is_notify:
-        await message.answer(
+        await message_answer(message=message,
             text="Ранее Вы Уже выключили получение сообщений от очевидцев",
             reply_markup=get_kb_by_user(user=user),
         )
@@ -61,7 +62,7 @@ async def disable_notifications(message: Message):
     admin.is_notify = False
     admin.save()
 
-    await message.answer(
+    await message_answer(message=message,
         text="Теперь Вы не будете получать сообщения от очевидцев",
         reply_markup=get_kb_by_user(user=user),
     )

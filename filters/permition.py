@@ -4,6 +4,7 @@ from datetime import datetime
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import RolePermition, User, UserRole, Permition
+from utils import message_answer, telegram_network_error
 
 
 class IsPermition(BaseFilter):
@@ -28,6 +29,7 @@ class IsPermition(BaseFilter):
         )
         return permition is not None
 
+    @telegram_network_error
     async def __call__(self, message: Message) -> bool:
         user: User = User.get_or_none(tg_id=message.from_user.id)
 
@@ -38,7 +40,7 @@ class IsPermition(BaseFilter):
 
             ban_until: str = user.ban_until.strftime("%d-%m-%Y %H:%M")
 
-            await message.answer(
+            await message_answer(message=message,
                 text=(
                     f"Вы не можете отправлять сообщения до срока окончания"
                     f" бана, напишите снова после {ban_until}"

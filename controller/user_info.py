@@ -5,8 +5,10 @@ from aiogram import Bot
 
 from database.models import Patrol, User
 from keyboards.admin.user_info import get_user_info_kb
+from utils import telegram_network_error
 
 
+@telegram_network_error
 async def send_message(bot: Bot, chat_id: int, from_user: User, by_user: User):
     """Отправка сообщения от очевидца сотруднику"""
     await bot.send_message(

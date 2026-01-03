@@ -5,7 +5,7 @@ from aiogram.types import Message
 from aiogram.filters import CommandStart
 from database.models import Role, User, UserRole
 from keyboards.common import get_kb_by_user
-from utils import telegram_network_error
+from utils import message_answer
 
 
 router = Router()
@@ -38,13 +38,7 @@ async def start_cmd(message: Message):
         role=Role.get(name="Очевидец"),
     )
 
-    await send_mess_by_start(message, user)
-
-
-@telegram_network_error
-async def send_mess_by_start(message: Message, user: User):
-
-    await message.answer(
+    await message_answer(message=message,
         text="❗️Уважаемые участники дорожного движения!\n"
         "🚓Госавтоинспекция Костромской области информирует, что для "
         "предупреждения ДТП с участием нетрезвых водителей создан  чат-бот "

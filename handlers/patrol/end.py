@@ -7,6 +7,7 @@ from database.models import Patrol, User
 from filters.permition import IsPermition
 from keyboards.common import get_kb_by_user
 from controller.patrol import get_patrol
+from utils import message_answer
 
 
 router = Router()
@@ -24,13 +25,13 @@ async def end_patrol(message: Message):
     if patrol:
         patrol.end = datetime.now()
         patrol.save()
-        await message.answer(
+        await message_answer(message=message,
             text="Патрулировнаие закончено, "
             "теперь Вы не будете получать сообщения от граждан",
             reply_markup=get_kb_by_user(user=inspector),
         )
     else:
-        await message.answer(
+        await message_answer(message=message,
             text="Вы уже не в патруле",
             reply_markup=get_kb_by_user(user=inspector),
         )

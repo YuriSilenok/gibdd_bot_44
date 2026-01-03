@@ -5,8 +5,9 @@ from typing import List
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError
 from database.models import ForwardMessage, User
+from utils import telegram_network_error
 
-
+@telegram_network_error
 async def sending_messages(
     bot: Bot,
     users: List[User],

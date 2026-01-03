@@ -6,6 +6,7 @@ from aiogram.types import CallbackQuery
 from controller.user_info import send_message
 from database.models import User, UserRole, Role
 from filters.permition import IsPermition
+from utils import message_answer, message_edit_reply_markup
 
 router = Router()
 
@@ -28,7 +29,7 @@ async def handle_role_deletion(callback: CallbackQuery):
     user_role: UserRole = UserRole.get_or_none(id=user_role_id)
 
     if user_role:
-        await callback.message.answer(
+        await message_answer(message=callback.message,
             text=f"Роль {user_role.role.name} удалена"
         )
         user_role.delete_instance()
@@ -39,5 +40,5 @@ async def handle_role_deletion(callback: CallbackQuery):
             by_user=User.get(tg_id=callback.from_user.id),
         )
     else:
-        await callback.message.answer(text="Роль уже была удалена ранее")
-        await callback.message.edit_reply_markup(reply_markup=None)
+        await message_answer(message=callback.message, text="Роль уже была удалена ранее")
+        await message_edit_reply_markup(message=callback.message, reply_markup=None)
