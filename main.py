@@ -17,11 +17,7 @@ async def main():
     """Запуск бота"""
     bot = Bot(
         token=TOKEN,
-        session=AiohttpSession(
-            connector=TCPConnector(
-                family=socket.AF_INET
-            )
-        )
+        session=AiohttpSession(connector=TCPConnector(family=socket.AF_INET)),
     )
     dp = Dispatcher()
     try:
