@@ -6,7 +6,7 @@ from controller.message.forward import send_message_to_employees
 from controller.message.save import save_user_message
 from filters.permition import IsPermition
 from keyboards.eyewitness import KB as eyewitness_kb
-from utils import message_answer, telegram_network_error
+from utils import message_answer
 
 
 router = Router()

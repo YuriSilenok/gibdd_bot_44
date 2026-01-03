@@ -3,9 +3,9 @@
 from datetime import datetime
 from typing import List
 
-from aiogram import Bot, Router, F
+from aiogram import Router, F
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery
 
 from database.models import UserMessage, User
 
@@ -18,7 +18,6 @@ from controller.message.delete import delete_messages
 from controller.message.forward import send_message_to_employee
 from controller.message.sending import sending_messages
 
-from handlers import send_message
 from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
 from utils import (
     callback_answer,
