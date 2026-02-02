@@ -94,7 +94,7 @@ async def confirm_ban(callback: CallbackQuery) -> None:
 
             await bot_send_message(
                 bot=callback.bot,
-                tg_id=user_banned.tg_id,
+                chat_id=user_banned.tg_id,
                 text=f"Вы заблокированы до" f" {user_banned.ban_until_strf}",
             )
 
