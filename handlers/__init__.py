@@ -10,6 +10,7 @@ from . import (
     show_employees,
     start,
     user_info,
+    get_id,
     other,
 )
 
@@ -25,5 +26,6 @@ def add_routers(dp: Dispatcher):
         user_info.router,
         start.router,
         send_message.router,
+        get_id.router,
         other.router,
     )
