@@ -15,7 +15,7 @@ from utils import message_answer
 router = Router()
 
 
-@router.message(Command("add_inpector"), IsPermition("Добавить инспектора"))
+@router.message(Command("add_inspector"), IsPermition("Добавить инспектора"))
 async def add_inspector_cmd(message: Message):
     """Добавить инспектора"""
     tg_id: int = int(message.text.strip().split()[-1])
