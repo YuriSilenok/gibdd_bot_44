@@ -1,17 +1,36 @@
 """Добавление ролей"""
 
 from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.types.contact import Contact
 from aiogram.fsm.context import FSMContext
-from controller.role import add_role
+from controller.role import add_role_by_contact, add_role_by_user
 from filters.permition import IsPermition
 from states.admin.inspector import AddInspector
 from states.admin.admin import AddAdmin
-from database.models import Admin, Role
+from database.models import Admin, Role, User
 from utils import message_answer
 
 router = Router()
+
+
+@router.message(Command("add_inpector"), IsPermition("Добавить инспектора"))
+async def add_inspector_cmd(message: Message):
+    """Добавить инспектора"""
+    tg_id: int = int(message.text.strip().split()[-1])
+    user: User = User.get_or_none(tg_id=tg_id)
+    if user is None:
+        await message.answer(text="Пользователь не запускал бота")
+        return
+
+    _, is_added, user = add_role_by_user(
+        user=user, role=Role.get(name="Инспектор")
+    )
+    if is_added:
+        await message.answer(text="Роль инспетора добавлена")
+    else:
+        await message.answer(text="Роль инспетора уже выдавалась")
 
 
 @router.message(
@@ -31,7 +50,7 @@ async def get_admin_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта администратора"""
 
     contact: Contact = message.contact
-    _, user_role_is_added, user = add_role(
+    _, user_role_is_added, user = add_role_by_contact(
         contact=contact,
         role=Role.get(name="Администратор"),
     )
@@ -73,7 +92,7 @@ async def get_inspector_contact(message: Message, state: FSMContext):
     """Обработчик получения контакта инспектора"""
 
     contact: Contact = message.contact
-    _, user_role_is_added, user = add_role(
+    _, user_role_is_added, user = add_role_by_contact(
         contact=contact,
         role=Role.get(name="Инспектор"),
     )

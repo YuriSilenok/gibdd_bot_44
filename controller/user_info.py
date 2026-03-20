@@ -1,5 +1,3 @@
-"""Лолгика при предоставлении информации о пользователе"""
-
 from typing import List
 from aiogram import Bot
 
