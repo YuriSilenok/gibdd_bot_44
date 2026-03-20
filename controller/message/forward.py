@@ -16,6 +16,7 @@ from database.models import (
     ForwardMessage,
 )
 from keyboards.employee import user_ban_kb
+from utils import telegram_network_error
 
 
 def get_prev_message(user_message: UserMessage) -> UserMessage:
@@ -35,6 +36,7 @@ def get_prev_message(user_message: UserMessage) -> UserMessage:
     )
 
 
+@telegram_network_error
 async def forward_text_message(
     bot: Bot,
     user_message: UserMessage,
@@ -53,6 +55,7 @@ async def forward_text_message(
     )
 
 
+@telegram_network_error
 async def forward_photo_message(
     bot: Bot,
     user_message: UserMessage,
@@ -73,6 +76,7 @@ async def forward_photo_message(
         )
 
 
+@telegram_network_error
 async def forward_video_message(
     bot: Bot,
     user_message: UserMessage,
@@ -93,6 +97,7 @@ async def forward_video_message(
         )
 
 
+@telegram_network_error
 async def forward_location_message(
     bot: Bot,
     user_message: UserMessage,
@@ -113,6 +118,7 @@ async def forward_location_message(
         )
 
 
+@telegram_network_error
 async def forward_animation_message(
     bot: Bot,
     user_message: UserMessage,

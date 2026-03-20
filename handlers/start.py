@@ -5,6 +5,7 @@ from aiogram.types import Message
 from aiogram.filters import CommandStart
 from database.models import Role, User, UserRole
 from keyboards.common import get_kb_by_user
+from utils import message_answer
 
 
 router = Router()
@@ -12,7 +13,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start_cmd(message: Message):
-    """Обработчик команды start"""
+    print("""Обработчик команды start""")
     user: User = User.get_or_none(tg_id=message.from_user.id)
     if user is None:
         user = User.create(
@@ -37,7 +38,8 @@ async def start_cmd(message: Message):
         role=Role.get(name="Очевидец"),
     )
 
-    await message.answer(
+    await message_answer(
+        message=message,
         text="❗️Уважаемые участники дорожного движения!\n"
         "🚓Госавтоинспекция Костромской области информирует, что для "
         "предупреждения ДТП с участием нетрезвых водителей создан  чат-бот "

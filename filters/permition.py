@@ -4,6 +4,8 @@ from datetime import datetime
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from database.models import RolePermition, User, UserRole, Permition
+from utils import message_answer
+
 
 
 class IsPermition(BaseFilter):
@@ -38,11 +40,12 @@ class IsPermition(BaseFilter):
 
             ban_until: str = user.ban_until.strftime("%d-%m-%Y %H:%M")
 
-            await message.answer(
+            await message_answer(
+                message=message,
                 text=(
                     f"Вы не можете отправлять сообщения до срока окончания"
                     f" бана, напишите снова после {ban_until}"
-                )
+                ),
             )
 
             return False

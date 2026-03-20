@@ -7,18 +7,24 @@ from aiogram import Router, F
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
-from controller.employee import is_employee
-from controller.message.delete import delete_messages
 from database.models import UserMessage, User
 
 from filters.permition import IsPermition
 
 from controller.admin import get_admins
 from controller.ban import ban_user
+from controller.employee import is_employee
+from controller.message.delete import delete_messages
 from controller.message.forward import send_message_to_employee
 from controller.message.sending import sending_messages
 
 from keyboards.employee import user_ban_cobfirm_and_cancel_kb, user_ban_kb
+from utils import (
+    callback_answer,
+    message_edit_reply_markup,
+    message_delete,
+    bot_send_message,
+)
 
 router = Router()
 
@@ -35,19 +41,25 @@ async def show_confirm(callback: CallbackQuery) -> None:
         user: User = user_message.from_user
 
         if is_employee(user=user):
-            await callback.answer(text="Нельзя заблокировать сотрудника")
-            await callback.message.edit_reply_markup(reply_markup=None)
+            await callback_answer(
+                callback=callback, text="Нельзя заблокировать сотрудника"
+            )
+            await message_edit_reply_markup(
+                message=callback.message, reply_markup=None
+            )
 
         else:
-            await callback.message.edit_reply_markup(
+            await message_edit_reply_markup(
+                message=callback.message,
                 reply_markup=user_ban_cobfirm_and_cancel_kb(
                     user_message=user_message
-                )
+                ),
             )
 
     except TelegramBadRequest as e:
-        await callback.answer(
-            text=f"Ошибка при Показать подтверждение бана: {e}"
+        await callback_answer(
+            callback=callback,
+            text=f"Ошибка при Показать подтверждение бана: {e}",
         )
 
 
@@ -64,17 +76,24 @@ async def confirm_ban(callback: CallbackQuery) -> None:
         user_banned: User = user_message.from_user
 
         if is_employee(user=user_banned):
-            await callback.answer(text="Нельзя заблокировать сотрудника")
-            await callback.message.edit_reply_markup(reply_markup=None)
+            await callback_answer(
+                callback=callback, text="Нельзя заблокировать сотрудника"
+            )
+            await message_edit_reply_markup(
+                message=callback.message, reply_markup=None
+            )
 
         elif user_banned.is_ban and user_banned.ban_until > datetime.now():
-            await callback.answer(text="Пользователь уже заблокирован")
-            await callback.message.delete()
+            await callback_answer(
+                callback=callback, text="Пользователь уже заблокирован"
+            )
+            await message_delete(message=callback.message)
 
         else:
             ban_user(user_banned=user_banned)
 
-            await callback.bot.send_message(
+            await bot_send_message(
+                bot=callback.bot,
                 chat_id=user_banned.tg_id,
                 text=f"Вы заблокированы до" f" {user_banned.ban_until_strf}",
             )
@@ -104,11 +123,13 @@ async def confirm_ban(callback: CallbackQuery) -> None:
                 ),
             )
 
-            await callback.answer(text="Пользователь заблокирован")
-            await callback.message.delete()
+            await callback_answer(
+                callback=callback, text="Пользователь заблокирован"
+            )
+            await message_delete(message=callback.message)
 
     except TelegramBadRequest as e:
-        await callback.answer(text=f"Ошибка: {e}")
+        await callback_answer(callback=callback, text=f"Ошибка: {e}")
 
 
 @router.callback_query(
@@ -118,8 +139,9 @@ async def cancel_ban(callback: CallbackQuery) -> None:
     """Отмена бана"""
 
     user_message_id = int(callback.data.split(sep="_")[-1])
-    await callback.message.edit_reply_markup(
+    await message_edit_reply_markup(
+        message=callback.message,
         reply_markup=user_ban_kb(
             user_message=UserMessage.get_by_id(pk=user_message_id)
-        )
+        ),
     )

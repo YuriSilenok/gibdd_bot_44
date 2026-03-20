@@ -27,7 +27,8 @@ async def main():
     try:
 
         add_routers(DP)
-        await DP.start_polling(BOT, skip_updatet=True)
+        print("Запуск бота")
+        await DP.start_polling(BOT)
     finally:
         await BOT.session.close()
 
