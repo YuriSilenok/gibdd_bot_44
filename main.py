@@ -9,8 +9,8 @@ from handlers import add_routers
 
 PROXY_HOST = "195.158.194.61"
 PROXY_PORT = 8000
-PROXY_LOGIN = "gzwnxz"
-PROXY_PASSWORD = "eYE93q"
+PROXY_LOGIN = ""
+PROXY_PASSWORD = ""
 
 load_dotenv(".env")
 TOKEN = os.getenv("TOKEN")
