@@ -7,7 +7,6 @@ from database.models import RolePermition, User, UserRole, Permition
 from utils import message_answer
 
 
-
 class IsPermition(BaseFilter):
     """Проверяет наличие привелегии у пользователя"""
 
