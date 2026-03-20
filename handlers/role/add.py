@@ -14,9 +14,7 @@ from database.models import Admin, Role, User
 router = Router()
 
 
-@router.message(
-        Command('add_inpector'), IsPermition("Добавить инспектора")
-)
+@router.message(Command("add_inpector"), IsPermition("Добавить инспектора"))
 async def add_inspector_cmd(message: Message):
     """Добавить инспектора"""
     tg_id: int = int(message.text.strip().split()[-1])
@@ -26,8 +24,7 @@ async def add_inspector_cmd(message: Message):
         return
 
     _, is_added, user = add_role_by_user(
-        user=user,
-        role=Role.get(name="Инспектор")
+        user=user, role=Role.get(name="Инспектор")
     )
     if is_added:
         await message.answer(text="Роль инспетора добавлена")

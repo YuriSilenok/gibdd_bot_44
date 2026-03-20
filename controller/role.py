@@ -6,7 +6,9 @@ from aiogram.types.contact import Contact
 from database.models import Role, User, UserRole
 
 
-def add_role_by_contact(contact: Contact, role: Role) -> Tuple[UserRole, bool, User]:
+def add_role_by_contact(
+    contact: Contact, role: Role
+) -> Tuple[UserRole, bool, User]:
     """Добавить существующему контакту роль"""
 
     user: User = User.get_or_none(tg_id=contact.user_id)
